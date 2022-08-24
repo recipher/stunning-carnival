@@ -10,7 +10,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json<LoaderData>({ user: 'Johnny' });
 };
 
-export default function NotesPage() {
+export default function HomePage() {
   const data = useLoaderData() as LoaderData;
 
   return (
