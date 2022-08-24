@@ -3,6 +3,7 @@ knowledge-zone
 
 @aws
 region eu-west-2
+runtime nodejs16.x
 
 @http
 /*
