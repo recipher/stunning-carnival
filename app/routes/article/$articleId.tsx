@@ -5,19 +5,19 @@ import { useCatch, useLoaderData } from "@remix-run/react";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { EMPTY_DOCUMENT } from "@contentful/rich-text-types";
 
-import { getEntry } from "~/models/entry.server";
+import { getArticle } from "~/models/article.server";
 
-type LoaderData = NonNullable<Awaited<ReturnType<typeof getEntry>>>;
+type LoaderData = NonNullable<Awaited<ReturnType<typeof getArticle>>>;
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const entry = await getEntry(params.entryId as string);
-  if (!entry) {
+  const article = await getArticle(params.articleId as string);
+  if (!article) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json<LoaderData>(entry);
+  return json<LoaderData>(article);
 };
 
-export default function EntryPage() {
+export default function ArticlePage() {
   const { fields } = useLoaderData() as LoaderData;
   const { title, contents = EMPTY_DOCUMENT } = fields;
 
