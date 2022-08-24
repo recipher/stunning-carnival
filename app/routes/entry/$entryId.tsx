@@ -3,6 +3,7 @@ import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
 
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
+import { EMPTY_DOCUMENT } from "@contentful/rich-text-types";
 
 import { getEntry } from "~/models/entry.server";
 
@@ -18,7 +19,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export default function EntryPage() {
   const { fields } = useLoaderData() as LoaderData;
-  const { title, contents } = fields;
+  const { title, contents = EMPTY_DOCUMENT } = fields;
 
   return (
     <div>
