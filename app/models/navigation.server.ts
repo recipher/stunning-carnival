@@ -1,8 +1,10 @@
 import contentful from '../contentful';
-import { Entry } from 'contentful';
-import { INavigationFields } from '../../@types/generated/contentful';
+import resolve from 'contentful-resolve-response';
+import type { Entry } from 'contentful';
+import type { INavigationFields } from '../../@types/generated/contentful';
 
 export async function getNavigation(navigationId: string): Promise<Entry<INavigationFields>> {
   const client = contentful();
-  return client.getEntry<INavigationFields>(navigationId);
+  const entry = await client.getEntry<INavigationFields>(navigationId, { include: 10 });
+  return resolve(entry);
 };

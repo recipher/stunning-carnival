@@ -11,9 +11,7 @@ type LoaderData = NonNullable<Awaited<ReturnType<typeof getArticle>>>;
 
 export const loader: LoaderFunction = async ({ params }) => {
   const article = await getArticle(params.articleId as string);
-  if (!article) {
-    throw new Response("Not Found", { status: 404 });
-  }
+  if (!article) throw new Response("Not Found", { status: 404 });
   return json<LoaderData>(article);
 };
 
@@ -22,10 +20,15 @@ export default function ArticlePage() {
   const { title, contents = EMPTY_DOCUMENT } = fields;
 
   return (
-    <div>
-      <h3 className="text-2xl font-bold">{title}</h3>
-      <p className="py-6">{documentToReactComponents(contents)}</p>
-      <hr className="my-4" />
+    <div className="py-6">
+      <div className="px-4 sm:px-6 md:px-0">
+        <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
+      </div>
+      <div className="px-4 sm:px-6 md:px-0">
+        <div className="py-4">
+          {documentToReactComponents(contents)}
+        </div>
+      </div>
     </div>
   );
 }
