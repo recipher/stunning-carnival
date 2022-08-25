@@ -48,7 +48,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Outlet/>
+        <Outlet />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

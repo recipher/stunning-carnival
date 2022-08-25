@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import "dotenv/config";
 import { createRequestHandler } from "@remix-run/architect";
 import * as build from "@remix-run/dev/server-build";
 

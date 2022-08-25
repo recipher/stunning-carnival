@@ -1,4 +1,4 @@
-import { createClient } from 'contentful';
+import { createClient } from "contentful";
 
 const accessToken = process.env.CONTENTFUL_API_KEY as string;
 const space = process.env.CONTENTFUL_SPACE_ID as string;
