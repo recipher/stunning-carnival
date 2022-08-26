@@ -8,33 +8,44 @@ import {
   XIcon,
   //@ts-ignore
 } from "@heroicons/react/outline";
-//@ts-ignore
-import { SearchIcon } from "@heroicons/react/solid";
 
+import Search from "~/components/search";
 import Navigation from "~/components/navigation";
 
 import { getNavigation } from "~/models/navigation.server";
 
+type Navigation = NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
+
 type LoaderData = {
-  navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
+  navigation: Navigation;
+  selected: Array<string>;
   zoneId: string;
+  entryId: string | undefined;
+  q: string | null;
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
-  const { zoneId } = params;
+const select = (navigation: Navigation, entryId: string): Array<string> => {
+  return [ entryId ];
+};
+
+export const loader: LoaderFunction = async ({ params, request }) => {
+  const { zoneId, entryId } = params;
   if (!zoneId) throw new Response("Not Found", { status: 404 });
 
-  const navigation = await getNavigation(zoneId as string);
+  const url = new URL(request.url);
+  const q = url.searchParams.get('q');
 
+  const navigation = await getNavigation(zoneId);
   if (!navigation) throw new Response("Not Found", { status: 404 });
+  const selected = select(navigation, entryId as string);
 
-  return json<LoaderData>({ navigation, zoneId });
+  return json<LoaderData>({ navigation, selected, zoneId, entryId, q });
 };
 
 export default function ZonePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { navigation } = useLoaderData() as LoaderData;
+  const { navigation, selected, zoneId, q } = useLoaderData() as LoaderData;
 
   return (
     <div>
@@ -98,7 +109,7 @@ export default function ZonePage() {
                   />
                 </div>
                 <div className="mt-5 h-0 flex-1 overflow-y-auto">
-                  <Navigation navigation={navigation} />
+                  <Navigation navigation={navigation} selected={selected} />
                 </div>
               </Dialog.Panel>
             </Transition.Child>
@@ -121,7 +132,7 @@ export default function ZonePage() {
             />
           </div>
           <div className="mt-5 flex flex-grow flex-col">
-            <Navigation navigation={navigation} />
+            <Navigation navigation={navigation} selected={selected} />
           </div>
         </div>
       </div>
@@ -137,27 +148,7 @@ export default function ZonePage() {
               <span className="sr-only">Open sidebar</span>
               <MenuAlt2Icon className="h-6 w-6" aria-hidden="true" />
             </button>
-            <div className="flex flex-1 justify-between px-4 md:px-0">
-              <div className="flex flex-1">
-                <form className="flex w-full md:ml-0" action="#" method="GET">
-                  <label htmlFor="search-field" className="sr-only">
-                    Search
-                  </label>
-                  <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center">
-                      <SearchIcon className="h-5 w-5" aria-hidden="true" />
-                    </div>
-                    <input
-                      id="search-field"
-                      className="block h-full w-full border-transparent py-2 pl-8 pr-3 text-gray-900 placeholder-gray-500 focus:border-transparent focus:placeholder-gray-400 focus:outline-none focus:ring-0 sm:text-sm"
-                      placeholder="Search"
-                      type="search"
-                      name="search"
-                    />
-                  </div>
-                </form>
-              </div>
-            </div>
+            <Search zoneId={zoneId} q={q} />
           </div>
 
           <main className="flex-1">

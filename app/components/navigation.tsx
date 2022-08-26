@@ -6,7 +6,7 @@ function classNames(...classes: string[]) {
 }
 
 //@ts-ignore
-function Item({ item: { sys, fields }, className }) {
+function Item({ item: { sys, fields }, className = "" }) {
   return sys.contentType.sys.id !== "link" ? (
     <Link
       key={fields.name}
@@ -29,8 +29,7 @@ function Item({ item: { sys, fields }, className }) {
 }
 
 //@ts-ignore
-export default function Navigation({ navigation }) {
-  console.log(navigation.fields.links);
+export default function Navigation({ navigation, selected }) {
   return (
     <nav className="flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
       {/* @ts-ignore */}
@@ -71,7 +70,7 @@ export default function Navigation({ navigation }) {
                   >
                     <path d="M6 6L14 10L6 14V6Z" fill="currentColor" />
                   </svg>
-                  {item.fields.entry.fields.title}
+                  <Item item={item.fields.entry} />
                 </Disclosure.Button>
                 <Disclosure.Panel className="space-y-1" static>
                   {/* @ts-ignore */}
