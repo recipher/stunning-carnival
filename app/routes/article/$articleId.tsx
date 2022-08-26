@@ -16,60 +16,7 @@ import Navigation from "~/components/navigation";
 import Article from "~/components/article";
 
 import { getArticle } from "~/models/article.server";
-
-const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  {
-    name: "Team",
-    current: false,
-    children: [
-      { name: "Overview", href: "#" },
-      { name: "Members", href: "#" },
-      { name: "Calendar", href: "#" },
-      { name: "Settings", href: "#" },
-    ],
-  },
-  {
-    name: "Projects",
-    current: false,
-    children: [
-      { name: "Overview", href: "#" },
-      { name: "Members", href: "#" },
-      { name: "Calendar", href: "#" },
-      { name: "Settings", href: "#" },
-    ],
-  },
-  {
-    name: "Calendar",
-    current: false,
-    children: [
-      { name: "Overview", href: "#" },
-      { name: "Members", href: "#" },
-      { name: "Calendar", href: "#" },
-      { name: "Settings", href: "#" },
-    ],
-  },
-  {
-    name: "Documents",
-    current: false,
-    children: [
-      { name: "Overview", href: "#" },
-      { name: "Members", href: "#" },
-      { name: "Calendar", href: "#" },
-      { name: "Settings", href: "#" },
-    ],
-  },
-  {
-    name: "Reports",
-    current: false,
-    children: [
-      { name: "Overview", href: "#" },
-      { name: "Members", href: "#" },
-      { name: "Calendar", href: "#" },
-      { name: "Settings", href: "#" },
-    ],
-  },
-];
+import { getNavigation } from "~/models/navigation.server";
 
 const userNavigation = [
   { name: "Your Profile", href: "#" },
@@ -77,23 +24,29 @@ const userNavigation = [
   { name: "Sign out", href: "#" },
 ];
 
-type LoaderData = NonNullable<Awaited<ReturnType<typeof getArticle>>>;
+type LoaderData = {
+  navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>,
+  article: NonNullable<Awaited<ReturnType<typeof getArticle>>>,
+};
 
 export const loader: LoaderFunction = async ({ params }) => {
+  const navigation = await getNavigation('kz');
   const article = await getArticle(params.articleId as string);
+
   if (!article) throw new Response("Not Found", { status: 404 });
-  return json<LoaderData>(article);
+
+  return json<LoaderData>({ navigation, article });
 };
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
-}
+};
 
 export default function ArticlePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { fields } = useLoaderData() as LoaderData;
-  const { title, contents } = fields;
+  const { article, navigation } = useLoaderData() as LoaderData;
+  const { title, contents } = article.fields;
 
   return (
     <div>

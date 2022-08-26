@@ -1,3 +1,4 @@
+import { Link } from "@remix-run/react";
 import { Disclosure } from "@headlessui/react";
 
 function classNames(...classes: string[]) {
@@ -5,15 +6,37 @@ function classNames(...classes: string[]) {
 }
 
 //@ts-ignore
+function Item({ item, className }) {
+  return (item.sys.contentType.sys.id !== 'link')
+    ? <Link
+        key={item.fields.name}
+        to={`/article/${item.sys.id}`}
+        className={className}
+      >
+        {item.fields.title}
+      </Link>
+    : <a
+        target="_blank"
+        rel="noreferrer"
+        href={item.fields.url}
+        key={item.fields.name}
+        className={className}
+      >
+      {item.fields.text}
+    </a>
+}
+
+//@ts-ignore
 export default function Navigation({ navigation }) {
+  console.log(navigation.fields.links[7].fields.links)
   return (
     <nav className="flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
       {/* @ts-ignore */}
-      {navigation.map((item) =>
-        !item.children ? (
-          <div key={item.name}>
-            <a
-              href={item.href}
+      {navigation.fields.links.map((item) =>
+        !item.fields.links ? (
+          <div key={item.fields.name}>
+            <Link
+              to={`/article/${item.sys.id}`}
               className={classNames(
                 item.current
                   ? "bg-gray-100 text-gray-900"
@@ -21,16 +44,16 @@ export default function Navigation({ navigation }) {
                 "group flex w-full items-center rounded-md py-2 pl-7 pr-2 text-sm font-medium"
               )}
             >
-              {item.name}
-            </a>
+              {item.fields.title}
+            </Link>
           </div>
         ) : (
-          <Disclosure as="div" key={item.name} className="space-y-1">
+          <Disclosure as="div" key={item.fields.name} className="space-y-1">
             {({ open }) => (
               <>
                 <Disclosure.Button
                   className={classNames(
-                    item.current
+                    true
                       ? "bg-gray-100 text-gray-900"
                       : "bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                     "group flex w-full items-center rounded-md py-2 pr-2 text-left text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -46,20 +69,17 @@ export default function Navigation({ navigation }) {
                   >
                     <path d="M6 6L14 10L6 14V6Z" fill="currentColor" />
                   </svg>
-                  {item.name}
+                  {item.fields.entry.fields.title}
                 </Disclosure.Button>
-                <Disclosure.Panel className="space-y-1">
+                <Disclosure.Panel className="space-y-1" static>
                   {/* @ts-ignore */}
-                  {item.children.map((subItem) => (
-                    <Disclosure.Button
-                      key={subItem.name}
-                      as="a"
-                      href={subItem.href}
+                  {item.fields.links.map((subItem) => (
+                    <Item
+                      key={subItem.fields.name}
+                      item={subItem}
                       className="group flex w-full items-center rounded-md py-2 pl-10 pr-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                    >
-                      {subItem.name}
-                    </Disclosure.Button>
-                  ))}
+                    />
+                ))}
                 </Disclosure.Panel>
               </>
             )}
