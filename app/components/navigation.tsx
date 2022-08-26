@@ -28,7 +28,6 @@ function Item({ item, className }) {
 
 //@ts-ignore
 export default function Navigation({ navigation }) {
-  console.log(navigation.fields.links[7].fields.links)
   return (
     <nav className="flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
       {/* @ts-ignore */}
