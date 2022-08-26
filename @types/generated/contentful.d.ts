@@ -10,11 +10,14 @@ export interface IArticleFields {
   /** Title */
   title: string;
 
-  /** Summary */
-  summary?: string | undefined;
+  /** Zone */
+  zone?: IZone | undefined;
 
   /** Contents */
   contents?: Document | undefined;
+
+  /** Summary */
+  summary?: string | undefined;
 }
 
 export interface IArticle extends Entry<IArticleFields> {
@@ -67,7 +70,7 @@ export interface ILinkFields {
   name: string;
 
   /** Url */
-  url: string;
+  url?: string | undefined;
 
   /** Text */
   text?: string | undefined;
@@ -96,6 +99,9 @@ export interface INavigationFields {
 
   /** Entry */
   entry?: IArticle | ILink | undefined;
+
+  /** Zone */
+  zone?: IZone | undefined;
 
   /** Links */
   links?: (IArticle | ILink | INavigation)[] | undefined;
@@ -170,13 +176,39 @@ export interface ISupportiveDocuments
   };
 }
 
+export interface IZoneFields {
+  /** Name */
+  name: string;
+
+  /** Title */
+  title?: string | undefined;
+}
+
+export interface IZone extends Entry<IZoneFields> {
+  sys: {
+    id: string;
+    type: string;
+    createdAt: string;
+    updatedAt: string;
+    locale: string;
+    contentType: {
+      sys: {
+        id: "zone";
+        linkType: "ContentType";
+        type: "Link";
+      };
+    };
+  };
+}
+
 export type CONTENT_TYPE =
   | "article"
   | "document"
   | "link"
   | "navigation"
   | "supportingDocumentSet"
-  | "supportiveDocuments";
+  | "supportiveDocuments"
+  | "zone";
 
 export type LOCALE_CODE = "en-US" | "es";
 

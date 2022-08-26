@@ -2,9 +2,8 @@ import { Fragment, useState } from "react";
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Outlet, useCatch, useLoaderData } from "@remix-run/react";
-import { Dialog, Menu, Transition } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import {
-  BellIcon,
   MenuAlt2Icon,
   XIcon,
   //@ts-ignore
@@ -15,12 +14,6 @@ import { SearchIcon } from "@heroicons/react/solid";
 import Navigation from "~/components/navigation";
 
 import { getNavigation } from "~/models/navigation.server";
-
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
-];
 
 type LoaderData = {
   navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
@@ -38,14 +31,10 @@ export const loader: LoaderFunction = async ({ params }) => {
   return json<LoaderData>({ navigation, zoneId });
 };
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
-
-export default function ArticlePage() {
+export default function ZonePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { navigation, zoneId } = useLoaderData() as LoaderData;
+  const { navigation } = useLoaderData() as LoaderData;
 
   return (
     <div>
@@ -109,7 +98,7 @@ export default function ArticlePage() {
                   />
                 </div>
                 <div className="mt-5 h-0 flex-1 overflow-y-auto">
-                  <Navigation navigation={navigation} zoneId={zoneId} />
+                  <Navigation navigation={navigation} />
                 </div>
               </Dialog.Panel>
             </Transition.Child>
@@ -132,7 +121,7 @@ export default function ArticlePage() {
             />
           </div>
           <div className="mt-5 flex flex-grow flex-col">
-            <Navigation navigation={navigation} zoneId={zoneId} />
+            <Navigation navigation={navigation} />
           </div>
         </div>
       </div>

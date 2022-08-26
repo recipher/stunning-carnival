@@ -4,12 +4,12 @@ import type { Entry } from "contentful";
 import type { INavigationFields } from "../../@types/generated/contentful";
 
 export async function getNavigation(
-  navigationId: string
+  zoneId: string
 ): Promise<Entry<INavigationFields>> {
   const client = contentful();
   const entries = await client.getEntries<INavigationFields>({
     content_type: "navigation",
-    "sys.id": navigationId,
+    "fields.zone.sys.id": zoneId,
     limit: 1,
     include: 5,
   });

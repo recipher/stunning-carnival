@@ -24,11 +24,15 @@ export const loader: LoaderFunction = async ({ params }) => {
 };
 
 export default function EntryPage() {
-  const { entry, zoneId } = useLoaderData() as LoaderData;
-  const { title, contents } = entry.fields;
+  const { entry } = useLoaderData() as LoaderData;
+  const { title, contents, zone } = entry.fields;
 
   return (
-    <Article title={title} document={contents as Document} zoneId={zoneId} />
+    <Article
+      title={title}
+      document={contents as Document}
+      zoneId={zone?.sys.id as string}
+    />
   );
 }
 

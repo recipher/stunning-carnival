@@ -6,30 +6,31 @@ function classNames(...classes: string[]) {
 }
 
 //@ts-ignore
-function Item({ item, zoneId, className }) {
-  return item.sys.contentType.sys.id !== "link" ? (
+function Item({ item: { sys, fields }, className }) {
+  return sys.contentType.sys.id !== "link" ? (
     <Link
-      key={item.fields.name}
-      to={`/${zoneId}/${item.sys.id}`}
+      key={fields.name}
+      to={`/${fields.zone.sys.id}/${sys.id}`}
       className={className}
     >
-      {item.fields.title}
+      {fields.title}
     </Link>
   ) : (
     <a
       target="_blank"
       rel="noreferrer"
-      href={item.fields.url}
-      key={item.fields.name}
+      href={fields.url}
+      key={fields.name}
       className={className}
     >
-      {item.fields.text}
+      {fields.text}
     </a>
   );
 }
 
 //@ts-ignore
-export default function Navigation({ navigation, zoneId }) {
+export default function Navigation({ navigation }) {
+  console.log(navigation.fields.links);
   return (
     <nav className="flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
       {/* @ts-ignore */}
@@ -37,7 +38,7 @@ export default function Navigation({ navigation, zoneId }) {
         !item.fields.links ? (
           <div key={item.fields.name}>
             <Link
-              to={`/${zoneId}/${item.sys.id}`}
+              to={`/${item.fields.zone.sys.id}/${item.sys.id}`}
               className={classNames(
                 item.current
                   ? "bg-gray-100 text-gray-900"
@@ -78,7 +79,6 @@ export default function Navigation({ navigation, zoneId }) {
                     <Item
                       key={subItem.fields.name}
                       item={subItem}
-                      zoneId={zoneId}
                       className="group flex w-full items-center rounded-md py-2 pl-10 pr-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     />
                   ))}
