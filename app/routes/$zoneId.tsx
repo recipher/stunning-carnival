@@ -25,7 +25,7 @@ type LoaderData = {
 };
 
 const select = (navigation: Nav, entryId: string): Array<string> => {
-  return [ entryId ];
+  return [entryId];
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
@@ -33,7 +33,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   if (!zoneId) throw new Response("Not Found", { status: 404 });
 
   const url = new URL(request.url);
-  const q = url.searchParams.get('q');
+  const q = url.searchParams.get("q");
 
   const navigation = await getNavigation(zoneId);
   if (!navigation) throw new Response("Not Found", { status: 404 });

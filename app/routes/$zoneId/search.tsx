@@ -12,7 +12,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   if (!zoneId) throw new Response("Not Found", { status: 404 });
 
   const url = new URL(request.url);
-  const q = url.searchParams.get('q');
+  const q = url.searchParams.get("q");
 
   return json<LoaderData>({ q });
 };
@@ -20,9 +20,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 export default function EntryPage() {
   const { q } = useLoaderData() as LoaderData;
 
-  return (
-    <div>{q}</div>
-  );
+  return <div>{q}</div>;
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
