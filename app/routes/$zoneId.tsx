@@ -14,17 +14,17 @@ import Navigation from "~/components/navigation";
 
 import { getNavigation } from "~/models/navigation.server";
 
-type Navigation = NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
+type Nav = NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
 
 type LoaderData = {
-  navigation: Navigation;
+  navigation: Nav;
   selected: Array<string>;
   zoneId: string;
   entryId: string | undefined;
   q: string | null;
 };
 
-const select = (navigation: Navigation, entryId: string): Array<string> => {
+const select = (navigation: Nav, entryId: string): Array<string> => {
   return [ entryId ];
 };
 

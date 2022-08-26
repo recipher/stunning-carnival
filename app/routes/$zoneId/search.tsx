@@ -1,7 +1,6 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
-import type { Document } from "@contentful/rich-text-types";
 
 type LoaderData = {
   q: string | null;
