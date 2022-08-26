@@ -139,7 +139,7 @@ export default function ArticlePage() {
       </div>
 
       <div className="md:pl-64">
-        <div className="mx-auto flex max-w-4xl flex-col md:px-8 xl:px-0">
+        <div className="mx-8 flex max-w-4xl flex-col md:px-8 xl:px-0">
           <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 border-b border-gray-200 bg-white">
             <button
               type="button"
