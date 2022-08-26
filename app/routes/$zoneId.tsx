@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useCatch, useLoaderData } from "@remix-run/react";
+import { Outlet, useCatch, useLoaderData } from "@remix-run/react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   BellIcon,
@@ -13,9 +13,7 @@ import {
 import { SearchIcon } from "@heroicons/react/solid";
 
 import Navigation from "~/components/navigation";
-import Article from "~/components/article";
 
-import { getArticle } from "~/models/article.server";
 import { getNavigation } from "~/models/navigation.server";
 
 const userNavigation = [
@@ -25,28 +23,29 @@ const userNavigation = [
 ];
 
 type LoaderData = {
-  navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>,
-  article: NonNullable<Awaited<ReturnType<typeof getArticle>>>,
+  navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
+  zoneId: string;
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const navigation = await getNavigation('kz');
-  const article = await getArticle(params.articleId as string);
+  const { zoneId } = params;
+  if (!zoneId) throw new Response("Not Found", { status: 404 });
 
-  if (!article) throw new Response("Not Found", { status: 404 });
+  const navigation = await getNavigation(zoneId as string);
 
-  return json<LoaderData>({ navigation, article });
+  if (!navigation) throw new Response("Not Found", { status: 404 });
+
+  return json<LoaderData>({ navigation, zoneId });
 };
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
-};
+}
 
 export default function ArticlePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { article, navigation } = useLoaderData() as LoaderData;
-  const { title, contents } = article.fields;
+  const { navigation, zoneId } = useLoaderData() as LoaderData;
 
   return (
     <div>
@@ -110,7 +109,7 @@ export default function ArticlePage() {
                   />
                 </div>
                 <div className="mt-5 h-0 flex-1 overflow-y-auto">
-                  <Navigation navigation={navigation} />
+                  <Navigation navigation={navigation} zoneId={zoneId} />
                 </div>
               </Dialog.Panel>
             </Transition.Child>
@@ -133,7 +132,7 @@ export default function ArticlePage() {
             />
           </div>
           <div className="mt-5 flex flex-grow flex-col">
-            <Navigation navigation={navigation} />
+            <Navigation navigation={navigation} zoneId={zoneId} />
           </div>
         </div>
       </div>
@@ -223,7 +222,7 @@ export default function ArticlePage() {
           </div>
 
           <main className="flex-1">
-            <Article title={title} document={contents} />
+            <Outlet />
           </main>
         </div>
       </div>
@@ -241,7 +240,7 @@ export function CatchBoundary() {
   const caught = useCatch();
 
   if (caught.status === 404) {
-    return <div>Entry not found</div>;
+    return <div>Zone not found</div>;
   }
 
   throw new Error(`Unexpected caught response with status: ${caught.status}`);

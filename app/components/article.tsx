@@ -1,9 +1,19 @@
 import { Link } from "@remix-run/react";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { INLINES, EMPTY_DOCUMENT } from "@contentful/rich-text-types";
+import type { Document } from "@contentful/rich-text-types";
 
-//@ts-ignore
-export default function Article({ title, document = EMPTY_DOCUMENT } = {}) {
+type ArticleParams = {
+  title: string;
+  document: Document;
+  zoneId: string;
+};
+
+export default function Article({
+  title,
+  document = EMPTY_DOCUMENT,
+  zoneId,
+}: ArticleParams) {
   const options = {
     renderNode: {
       [INLINES.ENTRY_HYPERLINK]: ({
@@ -12,7 +22,7 @@ export default function Article({ title, document = EMPTY_DOCUMENT } = {}) {
           target: { sys, fields },
         },
       }) => {
-        return <Link to={`/article/${sys.id}`}>{fields.title}</Link>;
+        return <Link to={`/${zoneId}/${sys.id}`}>{fields.title}</Link>;
       },
     },
   };

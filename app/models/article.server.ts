@@ -7,11 +7,12 @@ export async function getArticle(
   articleId: string
 ): Promise<Entry<IArticleFields>> {
   const client = contentful();
-  const entry = await client.getEntries<IArticleFields>({
+  const entries = await client.getEntries<IArticleFields>({
     content_type: "article",
     "sys.id": articleId,
     limit: 1,
     include: 10,
   });
-  return resolve(entry).at(0);
+  const [entry] = resolve(entries);
+  return entry;
 }

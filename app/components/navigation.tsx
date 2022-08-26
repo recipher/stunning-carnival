@@ -6,28 +6,30 @@ function classNames(...classes: string[]) {
 }
 
 //@ts-ignore
-function Item({ item, className }) {
-  return (item.sys.contentType.sys.id !== 'link')
-    ? <Link
-        key={item.fields.name}
-        to={`/article/${item.sys.id}`}
-        className={className}
-      >
-        {item.fields.title}
-      </Link>
-    : <a
-        target="_blank"
-        rel="noreferrer"
-        href={item.fields.url}
-        key={item.fields.name}
-        className={className}
-      >
+function Item({ item, zoneId, className }) {
+  return item.sys.contentType.sys.id !== "link" ? (
+    <Link
+      key={item.fields.name}
+      to={`/${zoneId}/${item.sys.id}`}
+      className={className}
+    >
+      {item.fields.title}
+    </Link>
+  ) : (
+    <a
+      target="_blank"
+      rel="noreferrer"
+      href={item.fields.url}
+      key={item.fields.name}
+      className={className}
+    >
       {item.fields.text}
     </a>
+  );
 }
 
 //@ts-ignore
-export default function Navigation({ navigation }) {
+export default function Navigation({ navigation, zoneId }) {
   return (
     <nav className="flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
       {/* @ts-ignore */}
@@ -35,7 +37,7 @@ export default function Navigation({ navigation }) {
         !item.fields.links ? (
           <div key={item.fields.name}>
             <Link
-              to={`/article/${item.sys.id}`}
+              to={`/${zoneId}/${item.sys.id}`}
               className={classNames(
                 item.current
                   ? "bg-gray-100 text-gray-900"
@@ -76,9 +78,10 @@ export default function Navigation({ navigation }) {
                     <Item
                       key={subItem.fields.name}
                       item={subItem}
+                      zoneId={zoneId}
                       className="group flex w-full items-center rounded-md py-2 pl-10 pr-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     />
-                ))}
+                  ))}
                 </Disclosure.Panel>
               </>
             )}
