@@ -1,7 +1,7 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
-import { useRouteData, serverError } from "remix-utils";
+import { useRouteData, serverError, notFound } from "remix-utils";
 import type { Document } from "@contentful/rich-text-types";
 import type { LoaderData as ZoneLoaderData } from "~/routes/$zoneId";
 
@@ -17,11 +17,11 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { entryId, zoneId } = params;
-  if (!entryId || !zoneId) throw new Response("Not Found", { status: 404 });
+  if (!zoneId || !entryId) throw notFound("Not Found");
 
   const entry = await getArticle(entryId);
 
-  if (!entry) throw new Response("Not Found", { status: 404 });
+  if (!entry) throw notFound("Not Found");
 
   return json<LoaderData>({ entry, zoneId });
 };
@@ -48,12 +48,7 @@ export default function EntryPage() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
-  return (
-    <ErrorMessage
-      message="An unexpected error occurred"
-      details={error.message}
-    />
-  );
+  return <ErrorMessage message="Server error" details={error.message} />;
 }
 
 export function CatchBoundary() {

@@ -36,12 +36,7 @@ export default function EntryPage() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
-  return (
-    <ErrorMessage
-      message="An unexpected error occurred"
-      details={error.message}
-    />
-  );
+  return <ErrorMessage message="Server error" details={error.message} />;
 }
 
 export function CatchBoundary() {

@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 import type { LoaderFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { Outlet, useCatch, useLoaderData } from "@remix-run/react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
@@ -8,6 +8,7 @@ import {
   XIcon,
   //@ts-ignore
 } from "@heroicons/react/outline";
+import { notFound } from "remix-utils";
 
 import Search from "~/components/search";
 import Navigation from "~/components/navigation";
@@ -31,13 +32,20 @@ const breadcrumb = (navigation: Nav, entryId: string): Array<string> => {
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const { zoneId, entryId } = params;
-  if (!zoneId) throw new Response("Not Found", { status: 404 });
+  if (!zoneId) throw notFound("Not Found");
 
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
 
   const navigation = await getNavigation(zoneId);
-  if (!navigation) throw new Response("Not Found", { status: 404 });
+  if (!navigation) throw notFound("Not Found");
+
+  if (!entryId) {
+    const firstEntryId = navigation.fields.links?.at(0)?.sys.id;
+    if (!firstEntryId) throw notFound("Not Found");
+    return redirect(`/${zoneId}/${firstEntryId}`);
+  }
+
   const breadcrumbs = breadcrumb(navigation, entryId as string);
 
   return json<LoaderData>({ navigation, breadcrumbs, zoneId, entryId, q });
@@ -166,12 +174,7 @@ export default function ZonePage() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
-  return (
-    <ErrorMessage
-      message="An unexpected error occurred"
-      details={error.message}
-    />
-  );
+  return <ErrorMessage message="Server error" details={error.message} />;
 }
 
 export function CatchBoundary() {
