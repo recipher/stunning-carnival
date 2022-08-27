@@ -32,6 +32,10 @@ function Item({ item: { sys, fields }, className = "" }) {
 export default function Navigation({ navigation, breadcrumbs }) {
   return (
     <nav className="flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
+      <Link to={`/${navigation.fields.zone.sys.id}`} 
+        className="bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex w-full items-center rounded-md py-2 pl-4 pr-2 font-medium">
+        {navigation.fields.zone.fields.title}
+      </Link>
       {/* @ts-ignore */}
       {navigation.fields.links.map((item) =>
         !item.fields.links ? (
