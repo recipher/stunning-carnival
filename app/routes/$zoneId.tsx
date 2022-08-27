@@ -11,20 +11,21 @@ import {
 
 import Search from "~/components/search";
 import Navigation from "~/components/navigation";
+import ErrorMessage from "~/components/error";
 
 import { getNavigation } from "~/models/navigation.server";
 
 type Nav = NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
 
-type LoaderData = {
+export type LoaderData = {
   navigation: Nav;
-  selected: Array<string>;
+  breadcrumbs: Array<string>;
   zoneId: string;
   entryId: string | undefined;
   q: string | null;
 };
 
-const select = (navigation: Nav, entryId: string): Array<string> => {
+const breadcrumb = (navigation: Nav, entryId: string): Array<string> => {
   return [entryId];
 };
 
@@ -37,15 +38,15 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   const navigation = await getNavigation(zoneId);
   if (!navigation) throw new Response("Not Found", { status: 404 });
-  const selected = select(navigation, entryId as string);
+  const breadcrumbs = breadcrumb(navigation, entryId as string);
 
-  return json<LoaderData>({ navigation, selected, zoneId, entryId, q });
+  return json<LoaderData>({ navigation, breadcrumbs, zoneId, entryId, q });
 };
 
 export default function ZonePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { navigation, selected, zoneId, q } = useLoaderData() as LoaderData;
+  const { navigation, breadcrumbs, zoneId, q } = useLoaderData() as LoaderData;
 
   return (
     <div>
@@ -109,7 +110,10 @@ export default function ZonePage() {
                   />
                 </div>
                 <div className="mt-5 h-0 flex-1 overflow-y-auto">
-                  <Navigation navigation={navigation} selected={selected} />
+                  <Navigation
+                    navigation={navigation}
+                    breadcrumbs={breadcrumbs}
+                  />
                 </div>
               </Dialog.Panel>
             </Transition.Child>
@@ -132,7 +136,7 @@ export default function ZonePage() {
             />
           </div>
           <div className="mt-5 flex flex-grow flex-col">
-            <Navigation navigation={navigation} selected={selected} />
+            <Navigation navigation={navigation} breadcrumbs={breadcrumbs} />
           </div>
         </div>
       </div>
@@ -162,15 +166,19 @@ export default function ZonePage() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
-
-  return <div>An unexpected error occurred: {error.message}</div>;
+  return (
+    <ErrorMessage
+      message="An unexpected error occurred"
+      details={error.message}
+    />
+  );
 }
 
 export function CatchBoundary() {
   const caught = useCatch();
 
   if (caught.status === 404) {
-    return <div>Zone not found</div>;
+    return <ErrorMessage message="Zone not found" />;
   }
 
   throw new Error(`Unexpected caught response with status: ${caught.status}`);

@@ -29,7 +29,7 @@ function Item({ item: { sys, fields }, className = "" }) {
 }
 
 //@ts-ignore
-export default function Navigation({ navigation, selected }) {
+export default function Navigation({ navigation, breadcrumbs }) {
   return (
     <nav className="flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
       {/* @ts-ignore */}

@@ -1,9 +1,12 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
+import { useRouteData, serverError } from "remix-utils";
 import type { Document } from "@contentful/rich-text-types";
+import type { LoaderData as ZoneLoaderData } from "~/routes/$zoneId";
 
 import Article from "~/components/article";
+import ErrorMessage from "~/components/error";
 
 import { getArticle } from "~/models/article.server";
 
@@ -27,6 +30,13 @@ export default function EntryPage() {
   const { entry } = useLoaderData() as LoaderData;
   const { title, contents, zone } = entry.fields;
 
+  const zoneData: ZoneLoaderData | undefined = useRouteData("routes/$zoneId");
+  if (zoneData === undefined) throw serverError("Zone not available");
+
+  const { breadcrumbs } = zoneData;
+
+  console.log(breadcrumbs);
+
   return (
     <Article
       title={title}
@@ -38,15 +48,19 @@ export default function EntryPage() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
-
-  return <div>An unexpected error occurred: {error.message}</div>;
+  return (
+    <ErrorMessage
+      message="An unexpected error occurred"
+      details={error.message}
+    />
+  );
 }
 
 export function CatchBoundary() {
   const caught = useCatch();
 
   if (caught.status === 404) {
-    return <div>Entry not found</div>;
+    return <ErrorMessage message="Article not found" />;
   }
 
   throw new Error(`Unexpected caught response with status: ${caught.status}`);
