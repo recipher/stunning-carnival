@@ -1,20 +1,33 @@
 type Candidate = {
-  item: any;
+  item: {
+    id: string;
+    title: string;
+  } | undefined;
   child: any;
 };
+
+const toData = (sys: any, fields: any) => 
+  fields.entry
+    ? { id: fields.entry.sys.id, title: fields.entry.fields.title }
+    : { id: sys.id, title: fields.title };
+
+const isMatch = (sys: any, fields: any, id: string) =>
+  fields.entry
+    ? id === fields.entry.sys.id
+    : id === sys.id;
 
 const search = (links: Array<any>, id: string) => {
   const nodes: Candidate = { item: undefined, child: undefined };
 
-  for (const { fields, sys } of links) {
-    if (sys.id === id) {
-      nodes.item = sys.id;
+  for (const { sys, fields } of links) {
+    if (isMatch(sys, fields, id)) {
+      nodes.item = toData(sys, fields);
       break;
     }
     if (fields.links) {
       const result = search(fields.links, id);
       if (result.item) {
-        nodes.item = sys.id;
+        nodes.item = toData(sys, fields);
         nodes.child = result;
         break;
       }
@@ -25,7 +38,7 @@ const search = (links: Array<any>, id: string) => {
 
 export default function(navigation: any, id: string) {
   let path = [], tree = search(navigation.fields.links, id);
-  console.log(tree)
+
   while (tree) {
     path.push(tree.item);
     tree = tree.child;

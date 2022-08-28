@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import type { LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Outlet, useCatch, useLoaderData } from "@remix-run/react";
+import { Outlet, useCatch, useLoaderData, useParams } from "@remix-run/react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   MenuAlt2Icon,
@@ -15,13 +15,10 @@ import Navigation from "~/components/navigation";
 import ErrorMessage from "~/components/error";
 
 import { getNavigation } from "~/models/navigation.server";
-import breadcrumb from '~/helpers/breadcrumb';
+import determineBreadcrumbs from "~/helpers/determineBreadcrumbs";
 
 export type LoaderData = {
   navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
-  breadcrumbs: Array<string>;
-  zoneId: string;
-  entryId: string | undefined;
   q: string | null;
 };
 
@@ -29,11 +26,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const { zoneId, entryId } = params;
   if (!zoneId) throw notFound("Not Found");
 
-  const url = new URL(request.url);
-  const q = url.searchParams.get("q");
-
   const navigation = await getNavigation(zoneId);
   if (!navigation) throw notFound("Not Found");
+
+  const url = new URL(request.url);
+  const q = url.searchParams.get("q");
 
   if (!entryId) {
     const firstEntryId = navigation.fields.links?.at(0)?.sys.id;
@@ -41,15 +38,18 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     return redirect(`/${zoneId}/${firstEntryId}`);
   }
 
-  const breadcrumbs = breadcrumb(navigation, entryId);
-
-  return json<LoaderData>({ navigation, breadcrumbs, zoneId, entryId, q });
+  return json<LoaderData>({ navigation, q });
 };
 
 export default function ZonePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { navigation, breadcrumbs, zoneId, q } = useLoaderData() as LoaderData;
+  const { navigation, q } = useLoaderData() as LoaderData;
+  const { entryId, zoneId } = useParams();
+
+  const breadcrumbs = determineBreadcrumbs(navigation, entryId as string);
+
+  console.log('zone', breadcrumbs);
 
   return (
     <div>

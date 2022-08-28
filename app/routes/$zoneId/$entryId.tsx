@@ -1,48 +1,52 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useCatch, useLoaderData } from "@remix-run/react";
-import { useRouteData, serverError, notFound } from "remix-utils";
+import { useCatch, useLoaderData, useParams } from "@remix-run/react";
+import { notFound } from "remix-utils";
 import type { Document } from "@contentful/rich-text-types";
-import type { LoaderData as ZoneLoaderData } from "~/routes/$zoneId";
 
 import Article from "~/components/article";
 import ErrorMessage from "~/components/error";
+import Breadcrumbs from "~/components/breadcrumbs";
 
 import { getArticle } from "~/models/article.server";
+import { getNavigation } from "~/models/navigation.server";
+import determineBreadcrumbs from '~/helpers/determineBreadcrumbs';
 
 type LoaderData = {
+  navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
   entry: NonNullable<Awaited<ReturnType<typeof getArticle>>>;
-  zoneId: string;
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { entryId, zoneId } = params;
   if (!zoneId || !entryId) throw notFound("Not Found");
 
+  const navigation = await getNavigation(zoneId);
+  if (!navigation) throw notFound("Not Found");
+  
   const entry = await getArticle(entryId);
-
   if (!entry) throw notFound("Not Found");
 
-  return json<LoaderData>({ entry, zoneId });
+  return json<LoaderData>({ navigation, entry });
 };
 
 export default function EntryPage() {
-  const { entry } = useLoaderData() as LoaderData;
+  const { entry, navigation } = useLoaderData() as LoaderData;
   const { title, contents, zone } = entry.fields;
 
-  const zoneData: ZoneLoaderData | undefined = useRouteData("routes/$zoneId");
-  if (zoneData === undefined) throw serverError("Zone not available");
+  const { zoneId, entryId } = useParams();
 
-  const { breadcrumbs } = zoneData;
-
-  console.log(breadcrumbs);
+  const breadcrumbs = determineBreadcrumbs(navigation, entryId as string);
 
   return (
-    <Article
-      title={title}
-      document={contents as Document}
-      zoneId={zone?.sys.id as string}
-    />
+    <>
+      <Breadcrumbs zone={zone} breadcrumbs={breadcrumbs} />
+      <Article
+        title={title}
+        document={contents as Document}
+        zoneId={zoneId as string}
+      />
+    </>
   );
 }
 
