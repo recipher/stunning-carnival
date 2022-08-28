@@ -1,4 +1,4 @@
-import { INavigation } from "../../@types/generated/contentful";
+import type { INavigation } from "../../@types/generated/contentful";
 
 export type IBreadcrumb = {
   id: string;
@@ -6,19 +6,17 @@ export type IBreadcrumb = {
 };
 
 type ITree = {
-  item: IBreadcrumb  | undefined;
+  item: IBreadcrumb | undefined;
   child: any;
 };
 
-const toData = (sys: any, fields: any) => 
+const toData = (sys: any, fields: any) =>
   fields.entry
     ? { id: fields.entry.sys.id, title: fields.entry.fields.title }
     : { id: sys.id, title: fields.title };
 
 const isMatch = (sys: any, fields: any, id: string) =>
-  fields.entry
-    ? id === fields.entry.sys.id
-    : id === sys.id;
+  fields.entry ? id === fields.entry.sys.id : id === sys.id;
 
 const search = (links: any, id: string) => {
   const nodes: ITree = { item: undefined, child: undefined };
@@ -38,12 +36,16 @@ const search = (links: any, id: string) => {
     }
   }
   return nodes;
-}
+};
 
-export default function(navigation: INavigation, id: string): Array<IBreadcrumb> {
+export default function (
+  navigation: INavigation,
+  id: string
+): Array<IBreadcrumb> {
   if (navigation === undefined) return [];
 
-  let path = [], tree = search(navigation.fields.links, id);
+  let path = [],
+    tree = search(navigation.fields.links, id);
 
   while (tree) {
     if (tree.item) path.push(tree.item);
@@ -51,4 +53,4 @@ export default function(navigation: INavigation, id: string): Array<IBreadcrumb>
   }
 
   return path as Array<IBreadcrumb>;
-};
+}

@@ -1,13 +1,12 @@
 import contentful from "../contentful";
 import resolve from "contentful-resolve-response";
-import type { Entry } from "contentful";
-import type { INavigationFields } from "../../@types/generated/contentful";
+import type { INavigation } from "../../@types/generated/contentful";
 
-const DEFAULT_ZONE = "knowledge-zone";
+const DEFAULT_ZONE = "technical-knowledge-base";
 
 export async function getNavigation(
   zoneId: string | undefined
-): Promise<Entry<INavigationFields>> {
+): Promise<INavigation> {
   const client = contentful();
   let query: any = {
     content_type: "navigation",
@@ -20,7 +19,7 @@ export async function getNavigation(
       ? { ...query, "fields.zone.fields.name": DEFAULT_ZONE }
       : { ...query, "fields.zone.sys.id": zoneId };
 
-  const entries = await client.getEntries<INavigationFields>(query);
+  const entries = await client.getEntries<INavigation>(query);
   const [entry] = resolve(entries);
   return entry;
 }

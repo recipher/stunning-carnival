@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
 import { Disclosure } from "@headlessui/react";
 
-import { IBreadcrumb } from "~/helpers/determineBreadcrumbs";
+import type { IBreadcrumb } from "~/helpers/determineBreadcrumbs";
 
 const classNames = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
@@ -30,15 +30,17 @@ function Item({ item: { sys, fields }, className = "" }) {
 
 //@ts-ignore
 export default function Navigation({ navigation, breadcrumbs }) {
-  if (navigation === undefined) return;
+  if (navigation === undefined) return null;
 
-  const isActive = (id: string) => 
+  const isActive = (id: string) =>
     breadcrumbs?.map((b: IBreadcrumb) => b?.id).includes(id);
 
   return (
     <nav className="flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
-      <Link to={`/${navigation.fields.zone.sys.id}`} 
-        className="bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex w-full items-center rounded-md py-2 pl-4 pr-2 font-medium">
+      <Link
+        to={`/${navigation.fields.zone.sys.id}`}
+        className="group flex w-full items-center rounded-md bg-white py-2 pl-4 pr-2 font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+      >
         {navigation.fields.zone.fields.title}
       </Link>
       {/* @ts-ignore */}
@@ -71,7 +73,7 @@ export default function Navigation({ navigation, breadcrumbs }) {
                 >
                   <svg
                     className={classNames(
-                      isActive(item.fields.entry.sys.id) ? "rotate-90 text-gray-400" : "text-gray-300",
+                      open ? "rotate-90 text-gray-400" : "text-gray-300",
                       "mr-2 h-5 w-5 flex-shrink-0 transform transition-colors duration-150 ease-in-out group-hover:text-gray-400"
                     )}
                     viewBox="0 0 20 20"
@@ -81,15 +83,18 @@ export default function Navigation({ navigation, breadcrumbs }) {
                   </svg>
                   <Item item={item.fields.entry} />
                 </Disclosure.Button>
-                <Disclosure.Panel className="space-y-1" static>
+                <Disclosure.Panel className="space-y-1">
                   {/* @ts-ignore */}
                   {item.fields.links.map((subItem) => (
                     <Item
                       key={subItem.fields.name}
                       item={subItem}
                       className={classNames(
-                        isActive(subItem.sys.id) ? "bg-gray-100 text-gray-900 hover:bg-gray-100" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                        "group flex w-full items-center rounded-md py-2 pl-10 pr-2 text-sm font-medium")}
+                        isActive(subItem.sys.id)
+                          ? "bg-gray-100 text-gray-900 hover:bg-gray-100"
+                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                        "group flex w-full items-center rounded-md py-2 pl-10 pr-2 text-sm font-medium"
+                      )}
                     />
                   ))}
                 </Disclosure.Panel>

@@ -1,13 +1,10 @@
 import contentful from "../contentful";
 import resolve from "contentful-resolve-response";
-import type { Entry } from "contentful";
-import type { IArticleFields } from "../../@types/generated/contentful";
+import type { IArticle } from "../../@types/generated/contentful";
 
-export async function getArticle(
-  articleId: string
-): Promise<Entry<IArticleFields>> {
+export async function getArticle(articleId: string): Promise<IArticle> {
   const client = contentful();
-  const entries = await client.getEntries<IArticleFields>({
+  const entries = await client.getEntries<IArticle>({
     content_type: "article",
     "sys.id": articleId,
     limit: 1,

@@ -18,7 +18,6 @@ import { getNavigation } from "~/models/navigation.server";
 import determineBreadcrumbs from "~/helpers/determineBreadcrumbs";
 import useNavigation from "~/hooks/useNavigation";
 
-import type { INavigation } from "../../@types/generated/contentful";
 import type { IBreadcrumb } from "../helpers/determineBreadcrumbs";
 
 export type LoaderData = {
@@ -30,11 +29,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const { zoneId, entryId } = params;
   if (!zoneId) throw notFound("Not Found");
 
-  const navigation = await getNavigation(zoneId);
-  if (!navigation) throw notFound("Not Found");
-
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
+
+  const navigation = await getNavigation(zoneId);
+  if (!navigation) throw notFound("Not Found");
 
   if (!entryId) {
     const firstEntryId = navigation.fields.links?.at(0)?.sys.id;
@@ -42,28 +41,20 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     return redirect(`/${zoneId}/${firstEntryId}`);
   }
 
-  return json<LoaderData>({ navigation, q });
+  return json<LoaderData>({ q, navigation });
 };
 
 export default function ZonePage() {
-  // const [navigation, setNavigation] = useState<INavigation | undefined>(undefined);
-  // const [breadcrumbs, setBreadcrumbs] = useState<Array<IBreadcrumb>>([]);
+  const [breadcrumbs, setBreadcrumbs] = useState<Array<IBreadcrumb>>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { q } = useLoaderData() as LoaderData;
+  const { q, navigation } = useLoaderData() as LoaderData;
   const { entryId, zoneId } = useParams();
 
-  const navigation = useNavigation();
-  const breadcrumbs = determineBreadcrumbs(navigation as INavigation, entryId as string);
-
-  // useEffect(() => {
-  //   setNavigation(useNavigation());
-  // }, [ entryId ]);
-
-  // useEffect(() => {
-  //   if (navigation !== undefined && entryId !== undefined)
-  //     setBreadcrumbs(determineBreadcrumbs(navigation, entryId));
-  // }, [ navigation, entryId ]);
+  useEffect(() => {
+    if (navigation !== undefined && entryId !== undefined)
+      setBreadcrumbs(determineBreadcrumbs(navigation, entryId));
+  }, [entryId, navigation]);
 
   return (
     <div>

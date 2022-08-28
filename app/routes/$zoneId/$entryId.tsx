@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData, useParams } from "@remix-run/react";
@@ -9,11 +10,11 @@ import ErrorMessage from "~/components/error";
 import Breadcrumbs from "~/components/breadcrumbs";
 
 import { getArticle } from "~/models/article.server";
-import { getNavigation } from "~/models/navigation.server";
-import determineBreadcrumbs from '~/helpers/determineBreadcrumbs';
+import determineBreadcrumbs from "~/helpers/determineBreadcrumbs";
+import type { IBreadcrumb } from "~/helpers/determineBreadcrumbs";
+import useNavigation from "~/hooks/useNavigation";
 
 type LoaderData = {
-  navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
   entry: NonNullable<Awaited<ReturnType<typeof getArticle>>>;
 };
 
@@ -21,22 +22,26 @@ export const loader: LoaderFunction = async ({ params }) => {
   const { entryId, zoneId } = params;
   if (!zoneId || !entryId) throw notFound("Not Found");
 
-  const navigation = await getNavigation(zoneId);
-  if (!navigation) throw notFound("Not Found");
-  
   const entry = await getArticle(entryId);
   if (!entry) throw notFound("Not Found");
 
-  return json<LoaderData>({ navigation, entry });
+  return json<LoaderData>({ entry });
 };
 
 export default function EntryPage() {
-  const { entry, navigation } = useLoaderData() as LoaderData;
+  const [breadcrumbs, setBreadcrumbs] = useState<Array<IBreadcrumb>>([]);
+
+  const { entry } = useLoaderData() as LoaderData;
   const { title, contents, zone } = entry.fields;
 
   const { zoneId, entryId } = useParams();
 
-  const breadcrumbs = determineBreadcrumbs(navigation, entryId as string);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (navigation !== undefined && entryId !== undefined)
+      setBreadcrumbs(determineBreadcrumbs(navigation, entryId));
+  }, [entryId, navigation]);
 
   return (
     <>

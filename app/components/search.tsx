@@ -1,15 +1,16 @@
 //@ts-ignore
 import { SearchIcon } from "@heroicons/react/solid";
+import { Form } from "@remix-run/react";
 
 //@ts-ignore
 export default function Search({ zoneId, q }) {
   return (
     <div className="flex flex-1 justify-between px-4 md:px-0">
       <div className="flex flex-1">
-        <form
+        <Form
           className="flex w-full md:ml-0"
           action={`/${zoneId}/search`}
-          method="GET"
+          method="get"
         >
           <label htmlFor="search-field" className="sr-only">
             Search
@@ -27,7 +28,7 @@ export default function Search({ zoneId, q }) {
               defaultValue={q}
             />
           </div>
-        </form>
+        </Form>
       </div>
     </div>
   );
