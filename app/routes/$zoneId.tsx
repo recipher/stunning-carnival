@@ -15,19 +15,14 @@ import Navigation from "~/components/navigation";
 import ErrorMessage from "~/components/error";
 
 import { getNavigation } from "~/models/navigation.server";
-
-type Nav = NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
+import breadcrumb from '~/helpers/breadcrumb';
 
 export type LoaderData = {
-  navigation: Nav;
+  navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
   breadcrumbs: Array<string>;
   zoneId: string;
   entryId: string | undefined;
   q: string | null;
-};
-
-const breadcrumb = (navigation: Nav, entryId: string): Array<string> => {
-  return [entryId];
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
@@ -46,7 +41,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     return redirect(`/${zoneId}/${firstEntryId}`);
   }
 
-  const breadcrumbs = breadcrumb(navigation, entryId as string);
+  const breadcrumbs = breadcrumb(navigation, entryId);
 
   return json<LoaderData>({ navigation, breadcrumbs, zoneId, entryId, q });
 };
