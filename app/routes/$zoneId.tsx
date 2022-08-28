@@ -16,7 +16,6 @@ import ErrorMessage from "~/components/error";
 
 import { getNavigation } from "~/models/navigation.server";
 import determineBreadcrumbs from "~/helpers/determineBreadcrumbs";
-import useNavigation from "~/hooks/useNavigation";
 
 import type { IBreadcrumb } from "../helpers/determineBreadcrumbs";
 
