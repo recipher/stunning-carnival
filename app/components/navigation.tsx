@@ -1,9 +1,9 @@
 import { Link } from "@remix-run/react";
 import { Disclosure } from "@headlessui/react";
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import { IBreadcrumb } from "~/helpers/determineBreadcrumbs";
+
+const classNames = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
 //@ts-ignore
 function Item({ item: { sys, fields }, className = "" }) {
@@ -30,6 +30,11 @@ function Item({ item: { sys, fields }, className = "" }) {
 
 //@ts-ignore
 export default function Navigation({ navigation, breadcrumbs }) {
+  if (navigation === undefined) return;
+
+  const isActive = (id: string) => 
+    breadcrumbs.map((b: IBreadcrumb) => b.id).includes(id);
+
   return (
     <nav className="flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
       <Link to={`/${navigation.fields.zone.sys.id}`} 
@@ -43,7 +48,7 @@ export default function Navigation({ navigation, breadcrumbs }) {
             <Link
               to={`/${item.fields.zone.sys.id}/${item.sys.id}`}
               className={classNames(
-                item.current
+                isActive(item.sys.id)
                   ? "bg-gray-100 text-gray-900"
                   : "bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                 "group flex w-full items-center rounded-md py-2 pl-7 pr-2 text-sm font-medium"
@@ -58,7 +63,7 @@ export default function Navigation({ navigation, breadcrumbs }) {
               <>
                 <Disclosure.Button
                   className={classNames(
-                    true
+                    isActive(item.fields.entry.sys.id)
                       ? "bg-gray-100 text-gray-900"
                       : "bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                     "group flex w-full items-center rounded-md py-2 pr-2 text-left text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -66,7 +71,7 @@ export default function Navigation({ navigation, breadcrumbs }) {
                 >
                   <svg
                     className={classNames(
-                      open ? "rotate-90 text-gray-400" : "text-gray-300",
+                      isActive(item.fields.entry.sys.id) ? "rotate-90 text-gray-400" : "text-gray-300",
                       "mr-2 h-5 w-5 flex-shrink-0 transform transition-colors duration-150 ease-in-out group-hover:text-gray-400"
                     )}
                     viewBox="0 0 20 20"
@@ -82,7 +87,9 @@ export default function Navigation({ navigation, breadcrumbs }) {
                     <Item
                       key={subItem.fields.name}
                       item={subItem}
-                      className="group flex w-full items-center rounded-md py-2 pl-10 pr-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      className={classNames(
+                        isActive(subItem.sys.id) ? "bg-gray-100 text-gray-900 hover:bg-gray-100" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                        "group flex w-full items-center rounded-md py-2 pl-10 pr-2 text-sm font-medium")}
                     />
                   ))}
                 </Disclosure.Panel>

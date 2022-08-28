@@ -1,8 +1,12 @@
-type Candidate = {
-  item: {
-    id: string;
-    title: string;
-  } | undefined;
+import { INavigation } from "../../@types/generated/contentful";
+
+export type IBreadcrumb = {
+  id: string;
+  title: string;
+};
+
+type ITree = {
+  item: IBreadcrumb  | undefined;
   child: any;
 };
 
@@ -16,8 +20,8 @@ const isMatch = (sys: any, fields: any, id: string) =>
     ? id === fields.entry.sys.id
     : id === sys.id;
 
-const search = (links: Array<any>, id: string) => {
-  const nodes: Candidate = { item: undefined, child: undefined };
+const search = (links: any, id: string) => {
+  const nodes: ITree = { item: undefined, child: undefined };
 
   for (const { sys, fields } of links) {
     if (isMatch(sys, fields, id)) {
@@ -36,7 +40,9 @@ const search = (links: Array<any>, id: string) => {
   return nodes;
 }
 
-export default function(navigation: any, id: string) {
+export default function(navigation: INavigation, id: string): Array<IBreadcrumb> {
+  if (navigation === undefined) return [];
+
   let path = [], tree = search(navigation.fields.links, id);
 
   while (tree) {
@@ -44,5 +50,5 @@ export default function(navigation: any, id: string) {
     tree = tree.child;
   }
 
-  return path;
+  return path as Array<IBreadcrumb>;
 };

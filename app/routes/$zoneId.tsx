@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import type { LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Outlet, useCatch, useLoaderData, useParams } from "@remix-run/react";
@@ -16,6 +16,10 @@ import ErrorMessage from "~/components/error";
 
 import { getNavigation } from "~/models/navigation.server";
 import determineBreadcrumbs from "~/helpers/determineBreadcrumbs";
+import useNavigation from "~/hooks/useNavigation";
+
+import type { INavigation } from "../../@types/generated/contentful";
+import type { IBreadcrumb } from "../helpers/determineBreadcrumbs";
 
 export type LoaderData = {
   navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
@@ -42,14 +46,24 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 };
 
 export default function ZonePage() {
+  // const [navigation, setNavigation] = useState<INavigation | undefined>(undefined);
+  // const [breadcrumbs, setBreadcrumbs] = useState<Array<IBreadcrumb>>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { navigation, q } = useLoaderData() as LoaderData;
+  const { q } = useLoaderData() as LoaderData;
   const { entryId, zoneId } = useParams();
 
-  const breadcrumbs = determineBreadcrumbs(navigation, entryId as string);
+  const navigation = useNavigation();
+  const breadcrumbs = determineBreadcrumbs(navigation as INavigation, entryId as string);
 
-  console.log('zone', breadcrumbs);
+  // useEffect(() => {
+  //   setNavigation(useNavigation());
+  // }, [ entryId ]);
+
+  // useEffect(() => {
+  //   if (navigation !== undefined && entryId !== undefined)
+  //     setBreadcrumbs(determineBreadcrumbs(navigation, entryId));
+  // }, [ navigation, entryId ]);
 
   return (
     <div>
