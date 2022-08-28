@@ -3,7 +3,7 @@ type Candidate = {
   child: any;
 };
 
-function createTree(links: Array<any>, id: string) {
+const search = (links: Array<any>, id: string) => {
   const nodes: Candidate = { item: undefined, child: undefined };
 
   for (const { fields, sys } of links) {
@@ -12,7 +12,7 @@ function createTree(links: Array<any>, id: string) {
       break;
     }
     if (fields.links) {
-      const result = createTree(fields.links, id);
+      const result = search(fields.links, id);
       if (result.item) {
         nodes.item = sys.id;
         nodes.child = result;
@@ -23,17 +23,13 @@ function createTree(links: Array<any>, id: string) {
   return nodes;
 }
 
-function findObject(links: Array<any>, id: string) {
-  let result = [], tree = createTree(links, id);
+export default function(navigation: any, id: string) {
+  let path = [], tree = search(navigation.fields.links, id);
+  console.log(tree)
   while (tree) {
-    result.push(tree.item);
+    path.push(tree.item);
     tree = tree.child;
   }
 
-  return result;
-}
-
-export default function(navigation: any, id: string) {
-  const x = findObject(navigation.fields.links, id);
-  return x;
+  return path;
 };
