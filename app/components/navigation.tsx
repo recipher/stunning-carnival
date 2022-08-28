@@ -33,7 +33,7 @@ export default function Navigation({ navigation, breadcrumbs }) {
   if (navigation === undefined) return;
 
   const isActive = (id: string) => 
-    breadcrumbs.map((b: IBreadcrumb) => b.id).includes(id);
+    breadcrumbs?.map((b: IBreadcrumb) => b?.id).includes(id);
 
   return (
     <nav className="flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">

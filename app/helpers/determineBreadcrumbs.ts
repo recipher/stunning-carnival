@@ -46,7 +46,7 @@ export default function(navigation: INavigation, id: string): Array<IBreadcrumb>
   let path = [], tree = search(navigation.fields.links, id);
 
   while (tree) {
-    path.push(tree.item);
+    if (tree.item) path.push(tree.item);
     tree = tree.child;
   }
 

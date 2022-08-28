@@ -7,13 +7,11 @@ export default function Breadcrumbs({ zone, breadcrumbs }) {
     <nav className="flex py-6" aria-label="Breadcrumb">
       <ol role="list" className="flex items-center space-x-4">
         <li>
-          <div>
-            <Link to={`/${zone.sys.id}`} className="text-gray-400 hover:text-gray-500">
-              {zone.fields.title}
-            </Link>
-          </div>
+          <Link to={`/${zone.sys.id}`} className="text-gray-400 hover:text-gray-500">
+            {zone.fields.title}
+          </Link>
         </li>
-        {breadcrumbs.map((breadcrumb: any) => (
+        {breadcrumbs?.map((breadcrumb: any) => (
           <li key={breadcrumb?.id}>
             <div className="flex items-center">
               <ChevronRightIcon className="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
