@@ -2,7 +2,14 @@ import { Fragment, useEffect, useState } from "react";
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useDataRefresh } from "remix-utils";
-import { Outlet, Link, useCatch, useLoaderData, useParams, useSearchParams } from "@remix-run/react";
+import {
+  Outlet,
+  Link,
+  useCatch,
+  useLoaderData,
+  useParams,
+  useSearchParams,
+} from "@remix-run/react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   MenuAlt2Icon,
@@ -40,7 +47,7 @@ export default function ZonePage() {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<IBreadcrumb>>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const [ searchParams ] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { navigation } = useLoaderData() as LoaderData;
   const { entryId, zoneId } = useParams();
 
@@ -48,7 +55,7 @@ export default function ZonePage() {
 
   useEffect(() => {
     if (entryId === undefined) refresh(); // Force refresh, which will redirect to home
-  }, [entryId]);
+  }, [entryId, refresh]);
 
   useEffect(() => {
     if (navigation !== undefined && entryId !== undefined)
@@ -109,7 +116,10 @@ export default function ZonePage() {
                     </button>
                   </div>
                 </Transition.Child>
-                <Link to="/" className="flex flex-shrink-0 w-full items-center px-6">
+                <Link
+                  to="/"
+                  className="flex w-full flex-shrink-0 items-center px-6"
+                >
                   <img
                     className="h-8 w-auto"
                     src="/_static/sgg.png"
@@ -135,7 +145,7 @@ export default function ZonePage() {
       <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-white pt-5">
-          <Link to="/" className="flex flex-shrink-0 w-full items-center px-6">
+          <Link to="/" className="flex w-full flex-shrink-0 items-center px-6">
             <img
               className="h-8 w-auto"
               src="/_static/sgg.png"

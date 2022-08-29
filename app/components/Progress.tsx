@@ -1,6 +1,6 @@
-import type { ReactElement, MutableRefObject } from 'react';
-import { useEffect, useRef } from 'react';
-import { useTransition } from '@remix-run/react';
+import type { ReactElement, MutableRefObject } from "react";
+import { useEffect, useRef } from "react";
+import { useTransition } from "@remix-run/react";
 
 export function useProgress(): MutableRefObject<HTMLDivElement> {
   const el = useRef<HTMLDivElement>();
@@ -8,20 +8,22 @@ export function useProgress(): MutableRefObject<HTMLDivElement> {
   const { location } = useTransition();
 
   useEffect(() => {
-    if (!location || !el.current) return;
+    const instance = el.current;
+
+    if (!location || !instance) return;
 
     if (timeout.current) clearTimeout(timeout.current);
 
-    el.current.style.width = '0%';
+    instance.style.width = "0%";
 
     let updateWidth = (ms: number) => {
       timeout.current = setTimeout(() => {
-        if (!el.current) return;
+        if (!instance) return;
 
-        let width = parseFloat(el.current.style.width);
+        let width = parseFloat(instance.style.width);
         let percent = !isNaN(width) ? 10 + 0.9 * width : 0;
 
-        el.current.style.width = `${percent}%`;
+        instance.style.width = `${percent}%`;
 
         updateWidth(100);
       }, ms);
@@ -31,14 +33,14 @@ export function useProgress(): MutableRefObject<HTMLDivElement> {
 
     return () => {
       clearTimeout(timeout.current);
-      if (!el.current) return;
-      if (el.current.style.width === '0%') return;
+      if (!instance) return;
+      if (instance.style.width === "0%") return;
 
-      el.current.style.width = '100%';
+      instance.style.width = "100%";
       timeout.current = setTimeout(() => {
-        if (el.current?.style.width !== '100%') return;
+        if (instance.style.width !== "100%") return;
 
-        el.current.style.width = '';
+        instance.style.width = "";
       }, 200);
     };
   }, [location]);
@@ -50,10 +52,13 @@ function Progress(): ReactElement {
   const progress = useProgress();
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-1 flex" style={{ zIndex: 999 }}>
+    <div
+      className="fixed top-0 left-0 right-0 flex h-1"
+      style={{ zIndex: 999 }}
+    >
       <div
         ref={progress}
-        className="transition-all ease-out bg-gradient-to-r from-green-400 via-blue-500 to-pink-500"
+        className="bg-gradient-to-r from-green-400 via-blue-500 to-pink-500 transition-all ease-out"
       />
     </div>
   );

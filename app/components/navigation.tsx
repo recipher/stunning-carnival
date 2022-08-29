@@ -6,12 +6,13 @@ import type { IBreadcrumb } from "~/helpers/determineBreadcrumbs";
 const classNames = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
 //@ts-ignore
-function Item({ item: { sys, fields }, className = "" }) {
+function Item({ item: { sys, fields }, style = {}, className = "" }) {
   return sys.contentType.sys.id !== "link" ? (
     <Link
-      key={fields.name}
+      key={sys.id}
       to={`/${fields.zone.sys.id}/${sys.id}`}
       className={className}
+      style={style}
     >
       {fields.title}
     </Link>
@@ -20,21 +21,19 @@ function Item({ item: { sys, fields }, className = "" }) {
       target="_blank"
       rel="noreferrer"
       href={fields.url}
-      key={fields.name}
+      key={sys.id}
       className={className}
+      style={style}
     >
       {fields.text}
     </a>
   );
 }
 
-//@ts-ignore
+// @ts-ignore
 function SubNavigation({ links, breadcrumbs, level = 0 }) {
-
   const isActive = (id: string) =>
     breadcrumbs?.map((b: IBreadcrumb) => b?.id).includes(id);
-
-  const indent = `pl-${level*3+7}`;
 
   return (
     <>
@@ -42,12 +41,13 @@ function SubNavigation({ links, breadcrumbs, level = 0 }) {
       {links.map((item) =>
         !item.fields.links ? (
           <div key={item.fields.name}>
-            <Item item={item}
+            <Item
+              item={item}
+              style={{ paddingLeft: `${level * 0.75 + 1.75}rem` }}
               className={classNames(
                 isActive(item.sys.id)
                   ? "bg-gray-100 text-gray-900"
                   : "bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                indent,
                 "group flex w-full items-center rounded-md py-2 pr-2 text-sm font-medium"
               )}
             />
@@ -77,7 +77,11 @@ function SubNavigation({ links, breadcrumbs, level = 0 }) {
                   <Item item={item.fields.entry} />
                 </Disclosure.Button>
                 <Disclosure.Panel className="space-y-1">
-                  <SubNavigation links={item.fields.links} breadcrumbs={breadcrumbs} level={level+1}/>
+                  <SubNavigation
+                    links={item.fields.links}
+                    breadcrumbs={breadcrumbs}
+                    level={level + 1}
+                  />
                 </Disclosure.Panel>
               </>
             )}
@@ -100,7 +104,10 @@ export default function Navigation({ navigation, breadcrumbs }) {
       >
         {navigation.fields.zone.fields.title}
       </Link>
-      <SubNavigation links={navigation.fields.links} breadcrumbs={breadcrumbs} />
+      <SubNavigation
+        links={navigation.fields.links}
+        breadcrumbs={breadcrumbs}
+      />
     </nav>
   );
 }
