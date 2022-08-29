@@ -13,3 +13,14 @@ export async function getArticle(articleId: string): Promise<IArticle> {
   const [entry] = resolve(entries);
   return entry;
 }
+
+export async function search(query: string): Promise<Array<IArticle>> {
+  const client = contentful();
+  const entries = await client.getEntries<IArticle>({
+    content_type: "article",
+    query,
+    limit: 25,
+    include: 10,
+  });
+  return resolve(entries);
+}

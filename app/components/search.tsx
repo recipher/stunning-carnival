@@ -25,6 +25,8 @@ export default function Search({ zoneId, q }) {
               placeholder="Search"
               type="search"
               name="q"
+              autoComplete="off"
+              autoCapitalize="off"
               defaultValue={q}
             />
           </div>
