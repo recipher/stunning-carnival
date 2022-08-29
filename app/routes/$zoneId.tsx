@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useDataRefresh } from "remix-utils";
-import { Outlet, useCatch, useLoaderData, useParams, useSearchParams } from "@remix-run/react";
+import { Outlet, Link, useCatch, useLoaderData, useParams, useSearchParams } from "@remix-run/react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   MenuAlt2Icon,
@@ -109,13 +109,13 @@ export default function ZonePage() {
                     </button>
                   </div>
                 </Transition.Child>
-                <div className="flex flex-shrink-0 items-center px-6">
+                <Link to="/" className="flex flex-shrink-0 w-full items-center px-6">
                   <img
                     className="h-8 w-auto"
                     src="/_static/sgg.png"
                     alt="Knowledge Zone"
                   />
-                </div>
+                </Link>
                 <div className="mt-5 h-0 flex-1 overflow-y-auto">
                   <Navigation
                     navigation={navigation}
@@ -135,13 +135,13 @@ export default function ZonePage() {
       <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-white pt-5">
-          <div className="flex flex-shrink-0 items-center px-6">
+          <Link to="/" className="flex flex-shrink-0 w-full items-center px-6">
             <img
               className="h-8 w-auto"
               src="/_static/sgg.png"
               alt="Knowledge Zone"
             />
-          </div>
+          </Link>
           <div className="mt-5 flex flex-grow flex-col">
             <Navigation navigation={navigation} breadcrumbs={breadcrumbs} />
           </div>

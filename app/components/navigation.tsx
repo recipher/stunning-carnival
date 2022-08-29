@@ -29,35 +29,28 @@ function Item({ item: { sys, fields }, className = "" }) {
 }
 
 //@ts-ignore
-export default function Navigation({ navigation, breadcrumbs }) {
-  if (navigation === undefined) return null;
+function SubNavigation({ links, breadcrumbs, level = 0 }) {
 
   const isActive = (id: string) =>
     breadcrumbs?.map((b: IBreadcrumb) => b?.id).includes(id);
 
+  const indent = `pl-${level*3+7}`;
+
   return (
-    <nav className="flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
-      <Link
-        to={`/${navigation.fields.zone.sys.id}`}
-        className="group flex w-full items-center rounded-md bg-white py-2 pl-4 pr-2 font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-      >
-        {navigation.fields.zone.fields.title}
-      </Link>
+    <>
       {/* @ts-ignore */}
-      {navigation.fields.links.map((item) =>
+      {links.map((item) =>
         !item.fields.links ? (
           <div key={item.fields.name}>
-            <Link
-              to={`/${item.fields.zone.sys.id}/${item.sys.id}`}
+            <Item item={item}
               className={classNames(
                 isActive(item.sys.id)
                   ? "bg-gray-100 text-gray-900"
                   : "bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                "group flex w-full items-center rounded-md py-2 pl-7 pr-2 text-sm font-medium"
+                indent,
+                "group flex w-full items-center rounded-md py-2 pr-2 text-sm font-medium"
               )}
-            >
-              {item.fields.title}
-            </Link>
+            />
           </div>
         ) : (
           <Disclosure as="div" key={item.fields.name} className="space-y-1">
@@ -84,25 +77,30 @@ export default function Navigation({ navigation, breadcrumbs }) {
                   <Item item={item.fields.entry} />
                 </Disclosure.Button>
                 <Disclosure.Panel className="space-y-1">
-                  {/* @ts-ignore */}
-                  {item.fields.links.map((subItem) => (
-                    <Item
-                      key={subItem.fields.name}
-                      item={subItem}
-                      className={classNames(
-                        isActive(subItem.sys.id)
-                          ? "bg-gray-100 text-gray-900 hover:bg-gray-100"
-                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                        "group flex w-full items-center rounded-md py-2 pl-10 pr-2 text-sm font-medium"
-                      )}
-                    />
-                  ))}
+                  <SubNavigation links={item.fields.links} breadcrumbs={breadcrumbs} level={level+1}/>
                 </Disclosure.Panel>
               </>
             )}
           </Disclosure>
         )
       )}
+    </>
+  );
+}
+
+//@ts-ignore
+export default function Navigation({ navigation, breadcrumbs }) {
+  if (navigation === undefined) return null;
+
+  return (
+    <nav className="flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
+      <Link
+        to={`/${navigation.fields.zone.sys.id}`}
+        className="flex w-full items-center rounded-md bg-white py-2 pl-4 pr-2 font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+      >
+        {navigation.fields.zone.fields.title}
+      </Link>
+      <SubNavigation links={navigation.fields.links} breadcrumbs={breadcrumbs} />
     </nav>
   );
 }
