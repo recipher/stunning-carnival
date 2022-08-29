@@ -1,7 +1,8 @@
 import { Fragment, useEffect, useState } from "react";
 import type { LoaderFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { Outlet, useCatch, useLoaderData, useParams } from "@remix-run/react";
+import { json } from "@remix-run/node";
+import { useDataRefresh } from "remix-utils";
+import { Outlet, useCatch, useLoaderData, useParams, useSearchParams } from "@remix-run/react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   MenuAlt2Icon,
@@ -21,34 +22,33 @@ import type { IBreadcrumb } from "../helpers/determineBreadcrumbs";
 
 export type LoaderData = {
   navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
-  q: string | null;
 };
 
-export const loader: LoaderFunction = async ({ params, request }) => {
-  const { zoneId, entryId } = params;
+export const loader: LoaderFunction = async ({ params }) => {
+  const { zoneId } = params;
   if (!zoneId) throw notFound("Not Found");
-
-  const url = new URL(request.url);
-  const q = url.searchParams.get("q");
 
   const navigation = await getNavigation(zoneId);
   if (!navigation) throw notFound("Not Found");
 
-  if (!entryId) {
-    const firstEntryId = navigation.fields.links?.at(0)?.sys.id;
-    if (!firstEntryId) throw notFound("Not Found");
-    return redirect(`/${zoneId}/${firstEntryId}`);
-  }
-
-  return json<LoaderData>({ q, navigation });
+  return json<LoaderData>({ navigation });
 };
 
 export default function ZonePage() {
+  let { refresh } = useDataRefresh();
+
   const [breadcrumbs, setBreadcrumbs] = useState<Array<IBreadcrumb>>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { q, navigation } = useLoaderData() as LoaderData;
+  const [ searchParams ] = useSearchParams();
+  const { navigation } = useLoaderData() as LoaderData;
   const { entryId, zoneId } = useParams();
+
+  const q = searchParams.get("q");
+
+  useEffect(() => {
+    if (entryId === undefined) refresh(); // Force refresh, which will redirect to home
+  }, [entryId]);
 
   useEffect(() => {
     if (navigation !== undefined && entryId !== undefined)

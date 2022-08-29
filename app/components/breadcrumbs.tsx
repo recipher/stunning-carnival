@@ -4,7 +4,7 @@ import { ChevronRightIcon } from "@heroicons/react/outline";
 // @ts-ignore
 export default function Breadcrumbs({ zone, breadcrumbs }) {
   return (
-    <nav className="flex py-6" aria-label="Breadcrumb">
+    <nav className="flex pt-6" aria-label="Breadcrumb">
       <ol className="flex items-center space-x-4">
         <li>
           <Link
