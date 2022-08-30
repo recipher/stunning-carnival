@@ -64,7 +64,6 @@ pipelines:
           name: acting-qa
           deployment: acting-qa
           trigger: manual
-  branches:
     main:
       - step: *CancelPreviousRuns
       - step: *CheckoutRepo
