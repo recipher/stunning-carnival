@@ -12,7 +12,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import Progress from "~/components/Progress";
+import Progress from "~/components/progress";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
@@ -40,7 +40,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 };
 
-export default function App() {
+export default function Root() {
   return (
     <html lang="en" className="h-full">
       <head>

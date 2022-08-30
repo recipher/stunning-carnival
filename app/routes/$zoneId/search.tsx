@@ -40,6 +40,7 @@ export default function EntryPage() {
               {entry.fields.title}
             </Link>
           </h3>
+          <p>{entry.fields.zone?.fields.title}</p>
         </div>
       ))}
     </div>

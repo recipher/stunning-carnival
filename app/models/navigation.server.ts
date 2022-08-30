@@ -2,7 +2,7 @@ import contentful from "../contentful";
 import resolve from "contentful-resolve-response";
 import type { INavigation } from "../../@types/generated/contentful";
 
-const DEFAULT_ZONE = "technical-knowledge-base";
+import { DEFAULT_ZONE } from "./zone.server";
 
 export async function getNavigation(
   zoneId: string | undefined
@@ -11,7 +11,8 @@ export async function getNavigation(
   let query: any = {
     content_type: "navigation",
     limit: 1,
-    include: 10,
+    include: 1,
+    select: "sys.id,fields.entry,fields.links,fields.zone"
   };
 
   query =
@@ -21,5 +22,8 @@ export async function getNavigation(
 
   const entries = await client.getEntries<INavigation>(query);
   const [entry] = resolve(entries);
+
+  console.log(JSON.stringify(entry, null, 2));
+
   return entry;
 }

@@ -62,6 +62,7 @@ function SubNavigation({ links, breadcrumbs, level = 0 }) {
             {({ open }) => (
               <>
                 <Disclosure.Button
+                  style={{ paddingLeft: `${level * 0.75}rem` }}
                   className={classNames(
                     isActive(item.fields.entry.sys.id)
                       ? "bg-gray-100 text-gray-900"
