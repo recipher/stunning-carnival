@@ -18,22 +18,27 @@ definitions:
           - npm run build
     - step: &InstallArc
         name: Install Arc
+        image: node:16
         script:
           - npm i -g @architect/architect
     - step: &DeployActingDEV
         name: Deploy acting-dev
+        image: node:16
         script:
           - arc deploy --acting-dev --prune          
     - step: &DeployActingQA
         name: Deploy acting-qa
+        image: node:16
         script:
           - arc deploy --acting-qa --prune  
     - step: &DeployStaging
         name: Deploy staging
+        image: node:16
         script:
           - arc deploy --staging --prune  
     - step: &DeployProduction
         name: Deploy production
+        image: node:16
         script:
           - arc deploy --production --prune  
 
