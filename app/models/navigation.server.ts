@@ -9,7 +9,7 @@ import type {
   IZone,
 } from "../../@types/generated/contentful";
 
-import { getCacheByKey, createCache } from "./cache.server";
+import { getCacheByKey, createCache, deleteCache } from "./cache.server";
 
 import { DEFAULT_ZONE } from "./zone.server";
 import type { Sys } from "contentful";
@@ -148,4 +148,9 @@ export async function getNavigation(
   await createCache(key, JSON.stringify(entry));
 
   return entry;
+}
+
+export async function refreshNavigation(zoneId: string): Promise<INavigation> {
+  await deleteCache(zoneId);
+  return getNavigation(zoneId);
 }
