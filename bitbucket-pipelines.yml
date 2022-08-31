@@ -26,15 +26,15 @@ definitions:
           - npm i -g @architect/architect
           - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID         
           - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-          - npx arc deploy name --testing --prune          
+          - npx arc deploy --name testing --prune          
     - step: &DeployActingQA
         name: Deploy acting-qa
         script:
-          - npx arc deploy name --staging --prune  
+          - npx arc deploy --name staging --prune  
     - step: &DeployStaging
         name: Deploy staging
         script:
-          - npx arc deploy --staging --prune  
+          - npx arc deploy name --staging --prune  
     - step: &DeployProduction
         name: Deploy production
         script:
