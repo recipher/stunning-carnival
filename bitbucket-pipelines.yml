@@ -12,11 +12,11 @@ definitions:
     - step: &DeployActingDEV
         name: Deploy acting-dev
         script:
-          - arc deploy --acting-dev --prune          
+          - arc deploy --testing --prune          
     - step: &DeployActingQA
         name: Deploy acting-qa
         script:
-          - arc deploy --acting-qa --prune  
+          - arc deploy --staging --prune  
     - step: &DeployStaging
         name: Deploy staging
         script:
