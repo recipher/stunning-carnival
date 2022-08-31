@@ -26,26 +26,23 @@ definitions:
           - npm run build
     - step: &InstallAWSCLI
         name: Install AWS CLI
-        caches: 
-          - aws
         script:
           - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           - unzip awscliv2.zip
           - ./aws/install
     - step: &InstallArc
         name: Install Arc
-        caches: 
-          - node
-          - arc
         script:
           - npm i -g @architect/architect
     - step: &DeployActingDEV
         name: Deploy acting-dev
         caches:
           - node
-          - aws
-          - arc
         script:
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - ./aws/install
+          - npm i -g @architect/architect
           - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
           - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
           - npx arc deploy --staging --prune
