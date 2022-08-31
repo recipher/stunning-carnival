@@ -16,7 +16,7 @@ import tailwindStylesheetUrl from "./styles/tailwind.css";
 export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: tailwindStylesheetUrl },
-    { rel: "icon", href: "/_static/favicon.ico" },
+    { rel: "icon", href: "/_static/sgg.ico" },
   ];
 };
 
