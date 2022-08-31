@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
-import { INLINES, BLOCKS, EMPTY_DOCUMENT } from "@contentful/rich-text-types";
+import { INLINES, BLOCKS, MARKS, EMPTY_DOCUMENT } from "@contentful/rich-text-types";
 import type { Document } from "@contentful/rich-text-types";
 
 type ArticleParams = {
@@ -15,8 +15,11 @@ export default function Article({
   zoneId,
 }: ArticleParams) {
   const options = {
+    renderMark: {
+      [MARKS.BOLD]: (text: string) => <strong className="font-semibold">{text}</strong>,
+    },
     renderNode: {
-      [INLINES.ENTRY_HYPERLINK]: ({
+        [INLINES.ENTRY_HYPERLINK]: ({
         data: {
           //@ts-ignore
           target: { sys, fields },
