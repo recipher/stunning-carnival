@@ -5,26 +5,31 @@ definitions:
         script:
           - npm i
           - npm run build
-
+    - step: &InstallAWSCLI
+        name: Install AWS CLI
+        script:
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - ./aws/install
+    - step: &InstallArc
+        name: Install Arc
+        script:
+          - npm i -g @architect/architect
     - step: &DeployActingDEV
         name: Deploy acting-dev
         script:
-          - npm i -g @architect/architect
           - npx arc deploy --testing --prune          
     - step: &DeployActingQA
         name: Deploy acting-qa
         script:
-          - npm i -g @architect/architect
           - npx arc deploy --staging --prune  
     - step: &DeployStaging
         name: Deploy staging
         script:
-          - npm i -g @architect/architect
           - npx arc deploy --staging --prune  
     - step: &DeployProduction
         name: Deploy production
         script:
-          - npm i -g @architect/architect
           - npx arc deploy --production --prune  
 
 image: node:16
@@ -32,6 +37,8 @@ pipelines:
   branches:
     develop:
       - step: *Build
+      - step: *InstallAWSCLI
+      - step: *InstallArc
       - step:
           <<: *DeployActingDEV
           name: acting-dev
@@ -44,6 +51,8 @@ pipelines:
           trigger: manual
     main:
       - step: *Build
+      - step: *InstallAWSCLI
+      - step: *InstallArc
       - step:
           <<: *DeployStaging
           name: staging
