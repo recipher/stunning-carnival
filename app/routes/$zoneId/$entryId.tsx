@@ -14,18 +14,24 @@ import determineBreadcrumbs from "~/helpers/determineBreadcrumbs";
 import type { IBreadcrumb } from "~/helpers/determineBreadcrumbs";
 import useNavigation from "~/hooks/useNavigation";
 
+import { requireProfile } from "~/auth/auth.server";
+import type { Profile } from "~/auth/auth.server";
+
 type LoaderData = {
   entry: NonNullable<Awaited<ReturnType<typeof getArticle>>>;
+  profile: Profile;
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
   const { entryId, zoneId } = params;
   if (!zoneId || !entryId) throw notFound("Not Found");
+
+  const profile = await requireProfile(request);
 
   const entry = await getArticle(entryId);
   if (!entry) throw notFound("Not Found");
 
-  return json<LoaderData>({ entry });
+  return json<LoaderData>({ entry, profile });
 };
 
 export default function EntryPage() {

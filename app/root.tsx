@@ -1,5 +1,4 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
-
 import {
   Links,
   LiveReload,
@@ -7,8 +6,11 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useCatch,
 } from "@remix-run/react";
+
 import Progress from "~/components/progress";
+import ErrorPage from "~/components/500";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 
@@ -35,6 +37,26 @@ export default function Root() {
       <body className="h-full">
         <Progress />
         <Outlet />
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
+  );
+}
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  console.error(error);
+
+  return (
+    <html lang="en" className="h-full">
+      <head>
+        <Meta />
+        <Links />
+      </head>
+      <body className="h-full">
+        <Progress />
+        <ErrorPage message={error.message} statusCode={500} />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

@@ -81,7 +81,7 @@ const populateNavigationLinks = async (links: ILinkables): Promise<any> =>
   );
 
 const populateLinkLinks = async (links: ILinkables): Promise<any> =>
-  populateLinks(links, "link", "fields.text,fields.url", mapLinks);
+  populateLinks(links, "link", "fields.title,fields.url", mapLinks);
 
 const populateArticleLinks = async (links: ILinkables): Promise<any> =>
   populateLinks(links, "article", "fields.title,fields.zone", mapArticles);

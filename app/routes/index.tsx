@@ -1,9 +1,14 @@
 import type { LoaderFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
 
+import { auth } from "~/auth/auth.server";
 import { getZone } from "~/models/zone.server";
 
-export const loader: LoaderFunction = async (_) => {
+export const loader: LoaderFunction = async ({ request }) => {
   const zone = await getZone();
-  return redirect(`/${zone.sys.id}`, 302);
+
+  await auth.isAuthenticated(request, { 
+    successRedirect: `/${zone.sys.id}`, 
+  });
+  
+  await auth.authenticate("auth0", request);
 };

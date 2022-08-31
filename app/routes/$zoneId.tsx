@@ -20,7 +20,10 @@ import { notFound } from "remix-utils";
 
 import Search from "~/components/search";
 import Navigation from "~/components/navigation";
-import ErrorMessage from "~/components/error";
+import ErrorPage from "~/components/500";
+
+import { requireProfile } from "~/auth/auth.server";
+import type { Profile } from "~/auth/auth.server";
 
 import { getNavigation } from "~/models/navigation.server";
 import determineBreadcrumbs from "~/helpers/determineBreadcrumbs";
@@ -29,16 +32,19 @@ import type { IBreadcrumb } from "../helpers/determineBreadcrumbs";
 
 export type LoaderData = {
   navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
+  profile: Profile;
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
   const { zoneId } = params;
-  if (!zoneId) throw notFound("Not Found");
+  if (!zoneId) throw notFound("Zone Not Found");
+
+  const profile = await requireProfile(request);
 
   const navigation = await getNavigation(zoneId);
-  if (!navigation) throw notFound("Not Found");
+  if (!navigation) throw notFound("Zone Not Found");
 
-  return json<LoaderData>({ navigation });
+  return json<LoaderData>({ navigation, profile });
 };
 
 export default function ZonePage() {
@@ -183,14 +189,15 @@ export default function ZonePage() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
-  return <ErrorMessage message="Server error" details={error.message} />;
+
+  return <ErrorPage message={error.message} statusCode={500} />
 }
 
 export function CatchBoundary() {
   const caught = useCatch();
 
   if (caught.status === 404) {
-    return <ErrorMessage message="Zone not found" />;
+    return <ErrorPage message="Zone not found" statusCode={404} />;
   }
 
   throw new Error(`Unexpected caught response with status: ${caught.status}`);

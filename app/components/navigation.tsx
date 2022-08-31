@@ -25,7 +25,7 @@ function Item({ item: { sys, fields }, style = {}, className = "" }) {
       className={className}
       style={style}
     >
-      {fields.text}
+      {fields.title}
     </a>
   );
 }
