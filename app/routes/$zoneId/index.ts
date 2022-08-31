@@ -5,7 +5,7 @@ import { notFound } from "remix-utils";
 import { getNavigation } from "~/models/navigation.server";
 
 const firstEntry = (link: any) =>
-  link?.sys.contentType.sys.id === 'navigation'
+  link?.sys.contentType.sys.id === "navigation"
     ? link?.fields.entry.sys.id
     : link?.sys.id;
 

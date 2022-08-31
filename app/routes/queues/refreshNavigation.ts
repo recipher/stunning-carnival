@@ -4,16 +4,16 @@ import { refreshNavigation } from "~/models/navigation.server";
 import { enqueue } from "./enqueue";
 
 type Payload = {
-	zoneId: string;
+  zoneId: string;
 };
 
 export const action: ActionFunction = async ({ request }) => {
-	const { zoneId } = await request.json();
-	if (zoneId) await refreshNavigation(zoneId);
+  const { zoneId } = await request.json();
+  if (zoneId) await refreshNavigation(zoneId);
 
-	return null;
+  return null;
 };
 
 export function enqueueRefreshNavigation(payload: Payload) {
-	enqueue({ route: "/queues/refreshNavigation", payload });
+  enqueue({ route: "/queues/refreshNavigation", payload });
 }
