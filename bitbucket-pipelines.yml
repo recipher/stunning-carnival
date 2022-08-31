@@ -1,0 +1,85 @@
+definitions:
+  steps:
+    - step: &CancelPreviousRuns
+        name: Cancel Previous Runs
+        image: styfle/cancel-workflow-action@0.9.1
+    - step: &CheckoutRepo
+        name: Checkout Repo
+        image: actions/checkout@v3
+    - step: &SetupNode
+        name: Setup Node
+        image: actions/setup-node@v3
+    - step: &Env
+        name: Setup Node
+        script:
+          - VER=$(node --version) && echo "Node ver: ${VER}"
+          - VER=$(npm --version) && echo "npm ver: ${VER}"
+    - step: &DownloadDeps
+        name: Download Deps
+        image: bahmutov/npm-install@v1
+    - step: &Build
+        name: Build
+        script:
+          - npm run build
+    - step: &InstallArc
+        name: Install Arc
+        script:
+          - npm i -g @architect/architect
+    - step: &DeployActingDEV
+        name: Deploy acting-dev
+        script:
+          - arc deploy --acting-dev --prune          
+    - step: &DeployActingQA
+        name: Deploy acting-qa
+        script:
+          - arc deploy --acting-qa --prune  
+    - step: &DeployStaging
+        name: Deploy staging
+        script:
+          - arc deploy --staging --prune  
+    - step: &DeployProduction
+        name: Deploy production
+        script:
+          - arc deploy --production --prune  
+
+
+pipelines:
+  branches:
+    develop:
+      - step: *CancelPreviousRuns
+      - step: *CheckoutRepo
+      - step: *SetupNode
+      - step: *Env
+      - step: *DownloadDeps
+      - step: *Build
+      - step: *InstallArc
+      - step: *SetupNode
+      - step:
+          <<: *DeployActingDEV
+          name: acting-dev
+          deployment: acting-dev
+          trigger: manual
+      - step:
+          <<: *DeployActingQA
+          name: acting-qa
+          deployment: acting-qa
+          trigger: manual
+    main:
+      - step: *CancelPreviousRuns
+      - step: *CheckoutRepo
+      - step: *SetupNode
+      - step: *Env
+      - step: *DownloadDeps
+      - step: *Build
+      - step: *InstallArc
+      - step: *SetupNode
+      - step:
+          <<: *DeployStaging
+          name: staging
+          deployment: staging
+          trigger: manual
+      - step:
+          <<: *DeployProduction
+          name: prod
+          deployment: prod
+          trigger: manual
