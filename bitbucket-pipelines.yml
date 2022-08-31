@@ -5,33 +5,33 @@ definitions:
         script:
           - npm i
           - npm run build
-    - step: &InstallArc
-        name: Install Arc
-        script:
-          - npm i -g @architect/architect
+
     - step: &DeployActingDEV
         name: Deploy acting-dev
         script:
-          - arc deploy --testing --prune          
+          - npm i -g @architect/architect
+          - npx arc deploy --testing --prune          
     - step: &DeployActingQA
         name: Deploy acting-qa
         script:
-          - arc deploy --staging --prune  
+          - npm i -g @architect/architect
+          - npx arc deploy --staging --prune  
     - step: &DeployStaging
         name: Deploy staging
         script:
-          - arc deploy --staging --prune  
+          - npm i -g @architect/architect
+          - npx arc deploy --staging --prune  
     - step: &DeployProduction
         name: Deploy production
         script:
-          - arc deploy --production --prune  
+          - npm i -g @architect/architect
+          - npx arc deploy --production --prune  
 
 image: node:16
 pipelines:
   branches:
     develop:
       - step: *Build
-      - step: *InstallArc
       - step:
           <<: *DeployActingDEV
           name: acting-dev
@@ -44,7 +44,6 @@ pipelines:
           trigger: manual
     main:
       - step: *Build
-      - step: *InstallArc
       - step:
           <<: *DeployStaging
           name: staging
