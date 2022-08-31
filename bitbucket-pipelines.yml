@@ -1,9 +1,20 @@
 definitions:
   steps:
+    - step: &Install
+        name: Install
+        script:
+          - npm i
+    - step: &Lint
+        name: Lint
+        script:
+          - npm run lint
+    - step: &Typecheck
+        name: Typecheck
+        script:
+          - npm run typecheck
     - step: &Build
         name: Build
         script:
-          - npm i
           - npm run build
     - step: &InstallAWSCLI
         name: Install AWS CLI
@@ -24,22 +35,25 @@ definitions:
           - unzip awscliv2.zip
           - ./aws/install
           - npm i -g @architect/architect
-          - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID         
+          - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
           - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-          - npx arc deploy --staging --prune          
+          - npx arc deploy --staging --prune
     - step: &DeployStaging
         name: Deploy staging
         script:
-          - npx arc deploy name --staging --prune  
+          - npx arc deploy name --staging --prune
     - step: &DeployProduction
         name: Deploy production
         script:
-          - npx arc deploy --production --prune  
+          - npx arc deploy --production --prune
 
 image: node:16
 pipelines:
   branches:
     develop:
+      - step: *Install
+      - step: *Lint
+      - step: *Typecheck
       - step: *Build
       - step:
           <<: *DeployActingDEV

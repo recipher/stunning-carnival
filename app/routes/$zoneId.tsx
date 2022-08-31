@@ -190,7 +190,7 @@ export default function ZonePage() {
 export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
 
-  return <ErrorPage message={error.message} statusCode={500} />
+  return <ErrorPage message={error.message} statusCode={500} />;
 }
 
 export function CatchBoundary() {

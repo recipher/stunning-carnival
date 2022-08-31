@@ -1,7 +1,6 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useCatch } from "@remix-run/react";
-import { notFound } from "remix-utils";
 
 import ErrorPage from "~/components/500";
 
@@ -28,7 +27,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
 
-  return <ErrorPage message={error.message} statusCode={500} />
+  return <ErrorPage message={error.message} statusCode={500} />;
 }
 
 export function CatchBoundary() {

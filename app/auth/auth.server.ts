@@ -9,7 +9,7 @@ import {
   AUTH0_CLIENT_SECRET,
   AUTH0_DOMAIN,
   SESSION_SECRET,
-} from './settings.server';
+} from "./settings.server";
 
 const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -24,7 +24,8 @@ const sessionStorage = createCookieSessionStorage({
 
 export const auth = new Authenticator<Auth0Profile>(sessionStorage);
 
-export const requireProfile = (request: Request) => auth.isAuthenticated(request, { failureRedirect: "/" });
+export const requireProfile = (request: Request) =>
+  auth.isAuthenticated(request, { failureRedirect: "/" });
 export type Profile = Auth0Profile;
 
 const auth0Strategy = new Auth0Strategy(
