@@ -1,14 +1,10 @@
 definitions:
   steps:
-    - step: &DownloadDeps
-        name: Download Deps
-        image: node:16
-        script:
-          - npm ci
     - step: &Build
         name: Build
         image: node:16
         script:
+          - npm ci
           - npm run build
     - step: &InstallArc
         name: Install Arc
@@ -39,7 +35,6 @@ definitions:
 pipelines:
   branches:
     develop:
-      - step: *DownloadDeps
       - step: *Build
       - step: *InstallArc
       - step:
