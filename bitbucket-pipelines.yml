@@ -1,24 +1,19 @@
 definitions:
   steps:
-    - step: &CancelPreviousRuns
-        name: Cancel Previous Runs
-        image: styfle/cancel-workflow-action@0.9.1
-    - step: &CheckoutRepo
-        name: Checkout Repo
-        image: actions/checkout@v3
-    - step: &SetupNode
-        name: Setup Node
-        image: actions/setup-node@v3
     - step: &Env
-        name: Setup Node
+        name: Environment
+        image: node:16
         script:
           - VER=$(node --version) && echo "Node ver: ${VER}"
           - VER=$(npm --version) && echo "npm ver: ${VER}"
     - step: &DownloadDeps
         name: Download Deps
-        image: bahmutov/npm-install@v1
+        image: node:16
+        script:
+          - npm ci
     - step: &Build
         name: Build
+        image: node:16
         script:
           - npm run build
     - step: &InstallArc
@@ -42,18 +37,13 @@ definitions:
         script:
           - arc deploy --production --prune  
 
-
 pipelines:
   branches:
     develop:
-      - step: *CancelPreviousRuns
-      - step: *CheckoutRepo
-      - step: *SetupNode
       - step: *Env
       - step: *DownloadDeps
       - step: *Build
       - step: *InstallArc
-      - step: *SetupNode
       - step:
           <<: *DeployActingDEV
           name: acting-dev
@@ -65,14 +55,10 @@ pipelines:
           deployment: acting-qa
           trigger: manual
     main:
-      - step: *CancelPreviousRuns
-      - step: *CheckoutRepo
-      - step: *SetupNode
       - step: *Env
       - step: *DownloadDeps
       - step: *Build
       - step: *InstallArc
-      - step: *SetupNode
       - step:
           <<: *DeployStaging
           name: staging
