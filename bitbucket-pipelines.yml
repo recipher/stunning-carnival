@@ -1,11 +1,5 @@
 definitions:
   steps:
-    - step: &Env
-        name: Environment
-        image: node:16
-        script:
-          - VER=$(node --version) && echo "Node ver: ${VER}"
-          - VER=$(npm --version) && echo "npm ver: ${VER}"
     - step: &DownloadDeps
         name: Download Deps
         image: node:16
@@ -45,7 +39,6 @@ definitions:
 pipelines:
   branches:
     develop:
-      - step: *Env
       - step: *DownloadDeps
       - step: *Build
       - step: *InstallArc
@@ -60,7 +53,6 @@ pipelines:
           deployment: acting-qa
           trigger: manual
     main:
-      - step: *Env
       - step: *DownloadDeps
       - step: *Build
       - step: *InstallArc
