@@ -18,6 +18,10 @@ definitions:
     - step: &DeployActingDEV
         name: Deploy acting-dev
         script:
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - ./aws/install
+          - npm i -g @architect/architect
           - npx arc deploy --testing --prune          
     - step: &DeployActingQA
         name: Deploy acting-qa
@@ -37,8 +41,6 @@ pipelines:
   branches:
     develop:
       - step: *Build
-      - step: *InstallAWSCLI
-      - step: *InstallArc
       - step:
           <<: *DeployActingDEV
           name: acting-dev
