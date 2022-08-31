@@ -22,6 +22,7 @@ definitions:
         name: Build
         caches: 
           - node
+          - build
         script:
           - npm run build
     - step: &InstallAWSCLI
@@ -65,7 +66,7 @@ pipelines:
       - step: *Build
       - step:
           <<: *DeployActingDEV
-          name: acting-dev
+          name: Deploy to acting-dev
           deployment: acting-dev
           trigger: manual
     main:
@@ -74,11 +75,11 @@ pipelines:
       - step: *InstallArc
       - step:
           <<: *DeployStaging
-          name: staging
+          name: Deploy to staging
           deployment: staging
           trigger: manual
       - step:
           <<: *DeployProduction
-          name: prod
+          name: Deploy to Production
           deployment: prod
           trigger: manual
