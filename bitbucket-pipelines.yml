@@ -48,7 +48,6 @@ pipelines:
           deployment: acting-qa
           trigger: manual
     main:
-      - step: *DownloadDeps
       - step: *Build
       - step: *InstallArc
       - step:
