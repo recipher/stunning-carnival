@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
-import { INLINES, EMPTY_DOCUMENT } from "@contentful/rich-text-types";
+import { INLINES, BLOCKS, EMPTY_DOCUMENT } from "@contentful/rich-text-types";
 import type { Document } from "@contentful/rich-text-types";
 
 type ArticleParams = {
@@ -21,9 +21,21 @@ export default function Article({
           //@ts-ignore
           target: { sys, fields },
         },
-      }) => {
-        return <Link to={`/${zoneId}/${sys.id}`}>{fields.title}</Link>;
-      },
+      }) => <Link to={`/${zoneId}/${sys.id}`}>{fields.title}</Link>,
+      [BLOCKS.EMBEDDED_ASSET]: ({
+        data: {
+          //@ts-ignore
+          target: { sys, fields },
+        },
+      }) => (
+        <img
+          key={sys.id}
+          src={`https://${fields.file.url}`}
+          height={fields.file.details.image.height}
+          width={fields.file.details.image.width}
+          alt={fields.description}
+        />
+      ),
     },
   };
 

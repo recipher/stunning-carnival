@@ -7,7 +7,7 @@ const classNames = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
 //@ts-ignore
 function Item({ item: { sys, fields }, style = {}, className = "" }) {
-  return sys.contentType.sys.id !== "link" ? (
+  return sys.contentType?.sys.id !== "link" ? (
     <Link
       key={sys.id}
       to={`/${fields.zone.sys.id}/${sys.id}`}

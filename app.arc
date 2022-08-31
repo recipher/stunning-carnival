@@ -13,12 +13,5 @@ runtime nodejs16.x
 @static
 
 @tables
-user
+cache
   pk *String
-
-password
-  pk *String # userId
-
-note
-  pk *String  # userId
-  sk **String # noteId
