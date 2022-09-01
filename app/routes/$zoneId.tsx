@@ -160,7 +160,7 @@ export default function ZonePage() {
             />
           </Link>
           <div className="mt-5 flex flex-grow flex-col">
-            <Navigation navigation={navigation} breadcrumbs={breadcrumbs} />
+            <Navigation onSelect={() => {}} navigation={navigation} breadcrumbs={breadcrumbs} />
           </div>
         </div>
       </div>

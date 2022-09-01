@@ -2,25 +2,25 @@ definitions:
   steps:
     - step: &Install
         name: Install
-        caches: 
+        caches:
           - node
         script:
           - npm i
     - step: &Lint
         name: Lint
-        caches: 
+        caches:
           - node
         script:
           - npm run lint
     - step: &Typecheck
         name: Typecheck
-        caches: 
+        caches:
           - node
         script:
           - npm run typecheck
     - step: &Build
         name: Build
-        caches: 
+        caches:
           - node
         script:
           - npm run build

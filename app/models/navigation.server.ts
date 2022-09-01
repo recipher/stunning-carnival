@@ -88,7 +88,12 @@ const populateLinkLinks = async (links: ILinkables): Promise<any> =>
   populateLinks(links, "link", "fields.title,fields.url", mapLinks);
 
 const populateArticleLinks = async (links: ILinkables): Promise<any> =>
-  populateLinks(links, "article", "fields.title,fields.isHidden,fields.zone", mapArticles);
+  populateLinks(
+    links,
+    "article",
+    "fields.title,fields.isHidden,fields.zone",
+    mapArticles
+  );
 
 const populateLinks = async (
   links: ILinkables,
@@ -110,7 +115,7 @@ const populateLinks = async (
 const populateAllLinks = async (links: ILinkables): Promise<any> => {
   if (links === undefined) return links;
 
-  const ids: Array<any> = links.map(link => link.sys.id);
+  const ids: Array<any> = links.map((link) => link.sys.id);
 
   const n = await populateNavigationLinks(links);
   const l = await populateLinkLinks(links);
@@ -118,9 +123,9 @@ const populateAllLinks = async (links: ILinkables): Promise<any> => {
 
   const populated = unnest([l, a, n]);
 
-  const find = (id: string) => populated.find(link => link.sys.id === id);
+  const find = (id: string) => populated.find((link) => link.sys.id === id);
 
-  return ids.map(id => ({ ...find(id) }));
+  return ids.map((id) => ({ ...find(id) }));
 };
 
 const populate = async (navigation: Array<INavigation>): Promise<any> => {
@@ -144,7 +149,8 @@ export async function getNavigation(
   let query: any = {
     content_type: "navigation",
     limit: 1,
-    select: "sys.id,sys.contentType,fields.name,fields.links,fields.zone,fields.isHidden,fields.isRoot",
+    select:
+      "sys.id,sys.contentType,fields.name,fields.links,fields.zone,fields.isHidden,fields.isRoot",
   };
 
   query =

@@ -8,4 +8,4 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   enqueueRefreshNavigation({ zoneId });
   return redirect("/");
-}
+};

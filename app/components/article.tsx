@@ -1,6 +1,11 @@
 import { Link } from "@remix-run/react";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
-import { INLINES, BLOCKS, MARKS, EMPTY_DOCUMENT } from "@contentful/rich-text-types";
+import {
+  INLINES,
+  BLOCKS,
+  MARKS,
+  EMPTY_DOCUMENT,
+} from "@contentful/rich-text-types";
 import type { Document } from "@contentful/rich-text-types";
 
 type ArticleParams = {
@@ -17,18 +22,28 @@ export default function Article({
   const options = {
     renderText: (text: string) => {
       //@ts-ignore
-      return text.split('\n').reduce((children, textSegment, index) => {
+      return text.split("\n").reduce((children, textSegment, index) => {
         return [...children, index > 0 && <br key={index} />, textSegment];
       }, []);
     },
     renderMark: {
-      [MARKS.BOLD]: (text: string) => <strong className="font-semibold">{text}</strong>,
+      [MARKS.BOLD]: (text: string) => (
+        <strong className="font-semibold">{text}</strong>
+      ),
     },
     renderNode: {
-        [INLINES.HYPERLINK]: (node: any, children: any) => 
-          <a href={node.data.uri} target="_blank" rel="noreferrer" className="font-semibold">{children}</a>,
+      [INLINES.HYPERLINK]: (node: any, children: any) => (
+        <a
+          href={node.data.uri}
+          target="_blank"
+          rel="noreferrer"
+          className="font-semibold"
+        >
+          {children}
+        </a>
+      ),
 
-        [INLINES.ENTRY_HYPERLINK]: ({
+      [INLINES.ENTRY_HYPERLINK]: ({
         data: {
           //@ts-ignore
           target: { sys, fields },
