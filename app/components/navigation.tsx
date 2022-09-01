@@ -6,9 +6,10 @@ import type { IBreadcrumb } from "~/helpers/determineBreadcrumbs";
 const classNames = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
 //@ts-ignore
-function Item({ item: { sys, fields }, style = {}, className = "" }) {
+function Item({ item: { sys, fields }, style = {}, onSelect, className = "" }) {
   return sys.contentType?.sys.id !== "link" ? (
     <Link
+      onClick={onSelect}
       key={sys.id}
       to={`/${fields.zone.sys.id}/${sys.id}`}
       className={className}
@@ -31,7 +32,7 @@ function Item({ item: { sys, fields }, style = {}, className = "" }) {
 }
 
 // @ts-ignore
-function SubNavigation({ links, breadcrumbs, level = 0 }) {
+function SubNavigation({ links, breadcrumbs, onSelect, level = 0 }) {
   const isActive = (id: string) =>
     breadcrumbs?.map((b: IBreadcrumb) => b?.id).includes(id);
 
@@ -42,6 +43,7 @@ function SubNavigation({ links, breadcrumbs, level = 0 }) {
         !item.fields.links ? (
           <div key={item.fields.name}>
             <Item
+              onSelect={onSelect}
               item={item}
               style={{ paddingLeft: `${level * 0.75 + 1.75}rem` }}
               className={classNames(
@@ -80,7 +82,7 @@ function SubNavigation({ links, breadcrumbs, level = 0 }) {
                   >
                     <path d="M6 6L14 10L6 14V6Z" fill="currentColor" />
                   </svg>
-                  <Item item={item.fields.entry} />
+                  <Item onSelect={onSelect} item={item.fields.entry} />
                 </Disclosure.Button>
                 <Transition
                   enter="transition duration-100 ease-out"
@@ -92,6 +94,7 @@ function SubNavigation({ links, breadcrumbs, level = 0 }) {
                 >
                   <Disclosure.Panel className="space-y-1">
                     <SubNavigation
+                      onSelect={onSelect}
                       links={item.fields.links}
                       breadcrumbs={breadcrumbs}
                       level={level + 1}
@@ -108,18 +111,20 @@ function SubNavigation({ links, breadcrumbs, level = 0 }) {
 }
 
 //@ts-ignore
-export default function Navigation({ navigation, breadcrumbs }) {
+export default function Navigation({ navigation, breadcrumbs, onSelect }) {
   if (navigation === undefined) return null;
 
   return (
     <nav className="flex-1 space-y-1 bg-white px-2 pb-10" aria-label="Sidebar">
       <Link
+        onClick={onSelect}
         to={`/${navigation.fields.zone.sys.id}`}
         className="flex w-full items-center rounded-md bg-white py-2 pl-4 pr-2 font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
       >
         {navigation.fields.zone.fields.title}
       </Link>
       <SubNavigation
+        onSelect={onSelect}
         links={navigation.fields.links}
         breadcrumbs={breadcrumbs}
       />

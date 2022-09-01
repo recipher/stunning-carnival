@@ -136,6 +136,7 @@ export default function ZonePage() {
                   <Navigation
                     navigation={navigation}
                     breadcrumbs={breadcrumbs}
+                    onSelect={() => setSidebarOpen(false)}
                   />
                 </div>
               </Dialog.Panel>
