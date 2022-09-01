@@ -8,7 +8,7 @@ export async function getArticle(articleId: string): Promise<IArticle> {
     content_type: "article",
     "sys.id": articleId,
     limit: 1,
-    include: 10,
+    include: 1,
   });
   const [entry] = resolve(entries);
   return entry;
