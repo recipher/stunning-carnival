@@ -34,8 +34,8 @@ definitions:
         name: Install Arc
         script:
           - npm i -g @architect/architect
-    - step: &DeployActingDEV
-        name: Deploy acting-dev
+    - step: &Deploy
+        name: Deploy
         caches:
           - node
         script:
@@ -46,15 +46,17 @@ definitions:
           - npm i -g @architect/architect
           - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
           - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-          - npx arc deploy --staging --prune
-    - step: &DeployStaging
-        name: Deploy staging
-        script:
-          - npx arc deploy name --staging --prune
-    - step: &DeployProduction
-        name: Deploy production
-        script:
-          - npx arc deploy --production --prune
+          - npx arc env --add --env $NODE_ENV ARC_APP_SECRET $ARC_APP_SECRET
+          - npx arc env --add --env $NODE_ENV AUTH0_CLIENT_ID $AUTH0_CLIENT_ID
+          - npx arc env --add --env $NODE_ENV AUTH0_CLIENT_SECRET $AUTH0_CLIENT_SECRET
+          - npx arc env --add --env $NODE_ENV AUTH0_DOMAIN $AUTH0_DOMAIN
+          - npx arc env --add --env $NODE_ENV AUTH0_CALLBACK_URL $AUTH0_CALLBACK_URL
+          - npx arc env --add --env $NODE_ENV CONTENTFUL_API_KEY $CONTENTFUL_API_KEY
+          - npx arc env --add --env $NODE_ENV CONTENTFUL_ENV $CONTENTFUL_ENV
+          - npx arc env --add --env $NODE_ENV CONTENTFUL_SPACE_ID $CONTENTFUL_SPACE_ID
+          - npx arc env --add --env $NODE_ENV NODE_ENV $NODE_ENV
+          - npx arc env --add --env $NODE_ENV SESSION_SECRET $SESSION_SECRET
+          - npx arc deploy --$NODE_ENV --prune
 
 image: node:16
 pipelines:
@@ -65,21 +67,19 @@ pipelines:
       - step: *Typecheck
       - step: *Build
       - step:
-          <<: *DeployActingDEV
+          <<: *Deploy
           name: Deploy to acting-dev
           deployment: acting-dev
           trigger: manual
     main:
       - step: *Build
-      - step: *InstallAWSCLI
-      - step: *InstallArc
       - step:
-          <<: *DeployStaging
+          <<: *Deploy
           name: Deploy to staging
           deployment: staging
           trigger: manual
       - step:
-          <<: *DeployProduction
+          <<: *Deploy
           name: Deploy to Production
           deployment: prod
           trigger: manual
