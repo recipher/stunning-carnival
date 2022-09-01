@@ -15,10 +15,19 @@ export default function Article({
   zoneId,
 }: ArticleParams) {
   const options = {
+    renderText: (text: string) => {
+      //@ts-ignore
+      return text.split('\n').reduce((children, textSegment, index) => {
+        return [...children, index > 0 && <br key={index} />, textSegment];
+      }, []);
+    },
     renderMark: {
       [MARKS.BOLD]: (text: string) => <strong className="font-semibold">{text}</strong>,
     },
     renderNode: {
+        [INLINES.HYPERLINK]: (node: any, children: any) => 
+          <a href={node.data.uri} target="_blank" rel="noreferrer" className="font-semibold">{children}</a>,
+
         [INLINES.ENTRY_HYPERLINK]: ({
         data: {
           //@ts-ignore
