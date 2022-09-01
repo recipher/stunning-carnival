@@ -1,6 +1,6 @@
 import type { ActionFunction } from "@remix-run/node";
 
-const BASE_URL = "http://localhost:3000";
+const { BASE_URL } = process.env;
 
 export const action: ActionFunction = async ({ request }) => {
   const { route, payload } = await request.json();

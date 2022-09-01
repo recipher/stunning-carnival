@@ -55,6 +55,7 @@ definitions:
           - npx arc env --add --env $NODE_ENV CONTENTFUL_ENV $CONTENTFUL_ENV
           - npx arc env --add --env $NODE_ENV CONTENTFUL_SPACE_ID $CONTENTFUL_SPACE_ID
           - npx arc env --add --env $NODE_ENV NODE_ENV $NODE_ENV
+          - npx arc env --add --env $NODE_ENV BASE_URL $BASE_URL
           - npx arc env --add --env $NODE_ENV SESSION_SECRET $SESSION_SECRET
           - npx arc deploy --$NODE_ENV --prune
 
