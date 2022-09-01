@@ -7,5 +7,5 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   if (!zoneId) throw new Response("Not Found", { status: 404 });
 
   enqueueRefreshNavigation({ zoneId });
-  return redirect(`/${zoneId}`);
+  return redirect("/");
 }
