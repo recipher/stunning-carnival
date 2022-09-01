@@ -81,5 +81,5 @@ pipelines:
       - step:
           <<: *Deploy
           name: Deploy to Production
-          deployment: prod
+          deployment: production
           trigger: manual
