@@ -38,7 +38,7 @@ function SubNavigation({ links, breadcrumbs, level = 0 }) {
   return (
     <>
       {/* @ts-ignore */}
-      {links.map((item) =>
+      {links.filter(item => item.fields.isHidden !== true).map((item) =>
         !item.fields.links ? (
           <div key={item.fields.name}>
             <Item

@@ -16,8 +16,8 @@ export interface IArticleFields {
   /** Contents */
   contents?: Document | undefined;
 
-  /** Summary */
-  summary?: string | undefined;
+  /** isHidden */
+  isHidden?: boolean | undefined;
 }
 
 export interface IArticle extends Entry<IArticleFields> {
@@ -37,43 +37,15 @@ export interface IArticle extends Entry<IArticleFields> {
   };
 }
 
-export interface IDocumentFields {
-  /** Name */
-  name: string;
-
-  /** Type */
-  type?: string | undefined;
-
-  /** Url */
-  url: string;
-}
-
-export interface IDocument extends Entry<IDocumentFields> {
-  sys: {
-    id: string;
-    type: string;
-    createdAt: string;
-    updatedAt: string;
-    locale: string;
-    contentType: {
-      sys: {
-        id: "document";
-        linkType: "ContentType";
-        type: "Link";
-      };
-    };
-  };
-}
-
 export interface ILinkFields {
   /** Name */
   name: string;
 
   /** Url */
-  url?: string | undefined;
+  url: string;
 
-  /** Text */
-  text?: string | undefined;
+  /** Title */
+  title: string;
 }
 
 export interface ILink extends Entry<ILinkFields> {
@@ -105,6 +77,12 @@ export interface INavigationFields {
 
   /** Links */
   links?: (IArticle | ILink | INavigation)[] | undefined;
+
+  /** IsRoot */
+  isRoot?: boolean | undefined;
+
+  /** isHidden */
+  isHidden?: boolean | undefined;
 }
 
 export interface INavigation extends Entry<INavigationFields> {
@@ -203,7 +181,6 @@ export interface IZone extends Entry<IZoneFields> {
 
 export type CONTENT_TYPE =
   | "article"
-  | "document"
   | "link"
   | "navigation"
   | "supportingDocumentSet"

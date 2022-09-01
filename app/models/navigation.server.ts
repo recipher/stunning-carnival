@@ -44,31 +44,35 @@ const mapEntry = (entry: IArticle) => ({
   sys: mapSys(entry.sys),
   fields: {
     title: entry.fields.title,
+    isHidden: entry.fields.isHidden,
     zone: mapZone(entry.fields.zone),
   },
 });
 
-const mapLinks = (entry: any) => ({
+const mapLinks = (entry: ILink) => ({
   sys: mapSys(entry.sys),
   fields: { ...entry.fields },
 });
 
-const mapArticles = (entry: any) => ({
+const mapArticles = (entry: IArticle) => ({
   sys: mapSys(entry.sys),
   fields: {
     name: entry.fields.name,
     title: entry.fields.title,
+    isHidden: entry.fields.isHidden,
     zone: mapZone(entry.fields.zone),
   },
 });
 
-const mapNavigations = async (entry: any) => ({
+const mapNavigations = async (entry: INavigation) => ({
   sys: mapSys(entry.sys),
   fields: {
     name: entry.fields.name,
+    isRoot: entry.fields.isRoot,
+    isHidden: entry.fields.isHidden,
     links: await populateAllLinks(entry.fields.links),
     zone: mapZone(entry.fields.zone),
-    entry: mapEntry(entry.fields.entry),
+    entry: mapEntry(entry.fields.entry as IArticle),
   },
 });
 
@@ -76,7 +80,7 @@ const populateNavigationLinks = async (links: ILinkables): Promise<any> =>
   populateLinks(
     links,
     "navigation",
-    "fields.zone,fields.links,fields.entry",
+    "fields.zone,fields.links,fields.entry,fields.isHidden,fields.isRoot",
     mapNavigations
   );
 
@@ -84,7 +88,7 @@ const populateLinkLinks = async (links: ILinkables): Promise<any> =>
   populateLinks(links, "link", "fields.title,fields.url", mapLinks);
 
 const populateArticleLinks = async (links: ILinkables): Promise<any> =>
-  populateLinks(links, "article", "fields.title,fields.zone", mapArticles);
+  populateLinks(links, "article", "fields.title,fields.isHidden,fields.zone", mapArticles);
 
 const populateLinks = async (
   links: ILinkables,
@@ -134,7 +138,7 @@ export async function getNavigation(
   let query: any = {
     content_type: "navigation",
     limit: 1,
-    select: "sys.id,sys.contentType,fields.name,fields.links,fields.zone",
+    select: "sys.id,sys.contentType,fields.name,fields.links,fields.zone,fields.isHidden,fields.isRoot",
   };
 
   query =
