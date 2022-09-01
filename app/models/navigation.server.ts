@@ -1,5 +1,5 @@
 import { map as mapPromises } from "bluebird";
-import { unnest, reverse } from "ramda";
+import { unnest } from "ramda";
 import contentful from "../contentful";
 import resolve from "contentful-resolve-response";
 import type {
@@ -110,11 +110,17 @@ const populateLinks = async (
 const populateAllLinks = async (links: ILinkables): Promise<any> => {
   if (links === undefined) return links;
 
+  const ids: Array<any> = links.map(link => link.sys.id);
+
   const n = await populateNavigationLinks(links);
   const l = await populateLinkLinks(links);
   const a = await populateArticleLinks(links);
 
-  return reverse(unnest([l, a, n]));
+  const populated = unnest([l, a, n]);
+
+  const find = (id: string) => populated.find(link => link.sys.id === id);
+
+  return ids.map(id => ({ ...find(id) }));
 };
 
 const populate = async (navigation: Array<INavigation>): Promise<any> => {
