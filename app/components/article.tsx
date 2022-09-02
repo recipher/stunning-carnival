@@ -49,7 +49,7 @@ export default function Article({
           //@ts-ignore
           target: { sys, fields },
         },
-      }) => <Link to={`/${zoneId}/${sys.id}`}>{fields.title}</Link>,
+      }) => <Link to={`/${fields.zone.sys.id}/${sys.id}`}>{fields.title}</Link>,
       [BLOCKS.EMBEDDED_ASSET]: ({
         data: {
           //@ts-ignore

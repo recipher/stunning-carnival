@@ -69,7 +69,7 @@ const mapNavigations = async (entry: INavigation) => ({
     isRoot: entry.fields.isRoot,
     links: await populateAllLinks(entry.fields.links),
     zone: mapZone(entry.fields.zone),
-    entry: mapEntry(entry.fields.entry as IArticle),
+    entry: entry.fields.entry ? mapEntry(entry.fields.entry as IArticle) : undefined,
   },
 });
 
@@ -105,9 +105,9 @@ const populateLinks = async (
     select: `sys.id,sys.contentType,fields.name,${select}`,
     "sys.id[in]": idsFor(links, contentType),
   });
-  const x = resolve(entries).filter((entry: any) => entry !== undefined);
 
-  return mapPromises(x, async (entry: any) => mapLinks(entry));
+  const resolved = resolve(entries).filter((entry: any) => entry !== undefined);
+  return mapPromises(resolved, async (entry: any) => mapLinks(entry));
 };
 
 const populateAllLinks = async (links: ILinkables): Promise<any> => {
