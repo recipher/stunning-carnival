@@ -33,7 +33,7 @@ export default function Root() {
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
+      <body className="flex h-full min-h-screen flex-col">
         <Progress />
         <Outlet />
         <ScrollRestoration />
