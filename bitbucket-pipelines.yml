@@ -50,23 +50,22 @@ definitions:
 
 image: node:16
 pipelines:
+  default:
+    - step: *Install
+    - step: *Lint
+    - step: *Typecheck
+    - step: *Build
   branches:
     develop:
-      - step: *Install
-      - step: *Lint
-      - step: *Typecheck
-      - step: *Build
       - step:
           <<: *Deploy
           name: Deploy to acting-dev
           deployment: acting-dev
     main:
-      - step: *Build
       - step:
           <<: *Deploy
           name: Deploy to staging
           deployment: staging
-          trigger: manual
       - step:
           <<: *Deploy
           name: Deploy to Production
