@@ -39,7 +39,7 @@ function SubNavigation({ links, breadcrumbs, onSelect, level = 0 }) {
   return (
     <>
       {links
-        .filter((item: any) => item.fields.isHidden !== true)
+        .filter((item: any) => item && item.fields) // hide unpublished
         .map((item: any) =>
           !item.fields.links ? (
             <div key={item.fields.name}>

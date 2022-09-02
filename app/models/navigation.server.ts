@@ -19,7 +19,7 @@ type ILinkables = Array<ILinkable> | undefined;
 
 const idsFor = (links: ILinkables = [], contentType: string): string =>
   links
-    .filter((link: ILinkable) => link.sys.contentType.sys.id === contentType)
+    .filter((link: ILinkable) => link.sys.contentType?.sys.id === contentType)
     .map((link: ILinkable) => link.sys.id)
     .join(",");
 
@@ -44,7 +44,6 @@ const mapEntry = (entry: IArticle) => ({
   sys: mapSys(entry.sys),
   fields: {
     title: entry.fields.title,
-    isHidden: entry.fields.isHidden,
     zone: mapZone(entry.fields.zone),
   },
 });
@@ -59,7 +58,6 @@ const mapArticles = (entry: IArticle) => ({
   fields: {
     name: entry.fields.name,
     title: entry.fields.title,
-    isHidden: entry.fields.isHidden,
     zone: mapZone(entry.fields.zone),
   },
 });
@@ -69,7 +67,6 @@ const mapNavigations = async (entry: INavigation) => ({
   fields: {
     name: entry.fields.name,
     isRoot: entry.fields.isRoot,
-    isHidden: entry.fields.isHidden,
     links: await populateAllLinks(entry.fields.links),
     zone: mapZone(entry.fields.zone),
     entry: mapEntry(entry.fields.entry as IArticle),
@@ -80,7 +77,7 @@ const populateNavigationLinks = async (links: ILinkables): Promise<any> =>
   populateLinks(
     links,
     "navigation",
-    "fields.zone,fields.links,fields.entry,fields.isHidden,fields.isRoot",
+    "fields.zone,fields.links,fields.entry,fields.isRoot",
     mapNavigations
   );
 
@@ -91,7 +88,7 @@ const populateArticleLinks = async (links: ILinkables): Promise<any> =>
   populateLinks(
     links,
     "article",
-    "fields.title,fields.isHidden,fields.zone",
+    "fields.title,fields.zone",
     mapArticles
   );
 
@@ -108,13 +105,16 @@ const populateLinks = async (
     select: `sys.id,sys.contentType,fields.name,${select}`,
     "sys.id[in]": idsFor(links, contentType),
   });
+  const x = resolve(entries).filter((entry: any) => entry !== undefined);
 
-  return mapPromises(resolve(entries), async (entry: any) => mapLinks(entry));
+  return mapPromises(x, async (entry: any) => mapLinks(entry));
 };
 
 const populateAllLinks = async (links: ILinkables): Promise<any> => {
   if (links === undefined) return links;
-
+  links = links.filter((link: any) => link !== undefined);  
+  if (links === undefined) return links;
+  
   const ids: Array<any> = links.map((link) => link.sys.id);
 
   const n = await populateNavigationLinks(links);
@@ -150,7 +150,7 @@ export async function getNavigation(
     content_type: "navigation",
     limit: 1,
     select:
-      "sys.id,sys.contentType,fields.name,fields.links,fields.zone,fields.isHidden,fields.isRoot",
+      "sys.id,sys.contentType,fields.name,fields.links,fields.zone,fields.isRoot",
   };
 
   query =

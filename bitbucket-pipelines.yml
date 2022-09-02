@@ -24,16 +24,6 @@ definitions:
           - node
         script:
           - npm run build
-    - step: &InstallAWSCLI
-        name: Install AWS CLI
-        script:
-          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          - unzip awscliv2.zip
-          - ./aws/install
-    - step: &InstallArc
-        name: Install Arc
-        script:
-          - npm i -g @architect/architect
     - step: &Deploy
         name: Deploy
         caches:
