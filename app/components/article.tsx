@@ -1,5 +1,4 @@
 import { Link } from "@remix-run/react";
-import mime from "mime";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import {
   INLINES,

@@ -1,7 +1,9 @@
 import { Link } from "@remix-run/react";
 import { Disclosure, Transition } from "@headlessui/react";
-
 import type { IBreadcrumb } from "~/helpers/determineBreadcrumbs";
+import { DEFAULT_ZONE } from "~/models/zone.server";
+
+const KNOWLEDGE_ZONE = "Knowledge Zone"; // TODO: Get this from cache
 
 const classNames = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
@@ -116,19 +118,28 @@ function SubNavigation({ links, breadcrumbs, onSelect, level = 0 }) {
 export default function Navigation({ navigation, breadcrumbs, onSelect }) {
   if (navigation === undefined) return null;
 
+  const TopLink = ({ to, title, level = 0 }: { to: string, title: string, level: number }) => (
+    <Link
+      onClick={onSelect}
+      to={to}
+      style={{ paddingLeft: `${level * 0.75 + 1}rem` }}
+      className="flex w-full items-center rounded-md bg-white py-1 pr-2 font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+      {title}
+    </Link>
+  );
+
+  const { fields: { zone }} = navigation;
+  const isSubLevel = zone.fields.name !== DEFAULT_ZONE;
+
   return (
     <nav className="flex-1 space-y-1 bg-white px-2 pb-10" aria-label="Sidebar">
-      <Link
-        onClick={onSelect}
-        to={`/${navigation.fields.zone.sys.id}`}
-        className="flex w-full items-center rounded-md bg-white py-2 pl-4 pr-2 font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-      >
-        {navigation.fields.zone.fields.title}
-      </Link>
+      {isSubLevel && <TopLink to="/" title={KNOWLEDGE_ZONE} level={0} />}
+      <TopLink to={`/${zone.sys.id}`} title={zone.fields.title} level={isSubLevel ? 1 : 0} />
       <SubNavigation
         onSelect={onSelect}
         links={navigation.fields.links}
         breadcrumbs={breadcrumbs}
+        level={isSubLevel ? 1 : 0}
       />
     </nav>
   );
