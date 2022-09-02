@@ -60,7 +60,6 @@ pipelines:
           <<: *Deploy
           name: Deploy to acting-dev
           deployment: acting-dev
-          trigger: manual
     main:
       - step: *Build
       - step:
