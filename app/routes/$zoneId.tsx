@@ -131,6 +131,7 @@ export default function ZonePage() {
                 <Link
                   to="/"
                   className="flex w-full flex-shrink-0 items-center px-6"
+                  onClick={() => setSidebarOpen(false)}
                 >
                   <img
                     className="h-8 w-auto"
