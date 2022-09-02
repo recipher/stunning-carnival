@@ -110,7 +110,6 @@ const populateLinks = async (
 const populateAllLinks = async (links: ILinkables): Promise<any> => {
   if (links === undefined) return links;
   links = links.filter((link: any) => link !== undefined);
-  if (links === undefined) return links;
 
   const ids: Array<any> = links.map((link) => link.sys.id);
 
