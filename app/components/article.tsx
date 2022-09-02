@@ -1,4 +1,5 @@
 import { Link } from "@remix-run/react";
+import mime from "mime";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import {
   INLINES,
@@ -55,16 +56,28 @@ export default function Article({
           target: { sys, fields: { file, description } },
         },
       }) => {
-        // console.log(file.contentType);
-        return (
+        const type = file.contentType.split('/')[0];
+
+        const image = ({ key, file, description }: { key: string, file: any, description: string }) => (
           <img
-            key={sys.id}
+            key={key}
             src={`https://${file.url}`}
             height={file.details.image.height}
             width={file.details.image.width}
             alt={description}
           />
         );
+
+        const video = ({ key, file }: { key: string, file: any, description: string }) => (
+          <video key={key} controls>
+            <source src={`https://${file.url}`} type={file.contentType} />
+          </video>
+        );
+
+        //@ts-ignore
+        const component = { image, video }[type];
+
+        return component ? component({ key: sys.id , file, description }) : null;
       },
     },
   };
