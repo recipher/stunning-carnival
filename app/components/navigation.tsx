@@ -1,9 +1,8 @@
 import { Link } from "@remix-run/react";
 import { Disclosure, Transition } from "@headlessui/react";
 import type { IBreadcrumb } from "~/helpers/determineBreadcrumbs";
-import { DEFAULT_ZONE } from "~/models/zone.server";
 
-const KNOWLEDGE_ZONE = "Knowledge Zone"; // TODO: Get this from cache
+const KNOWLEDGE_ZONE = "Knowledge Zone";
 
 const classNames = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
@@ -34,7 +33,7 @@ function Item({ item: { sys, fields }, style = {}, onSelect, className = "" }) {
 }
 
 // @ts-ignore
-function SubNavigation({ links, breadcrumbs, onSelect, level = 0 }) {
+function SubNavigation({ links, breadcrumbs, onSelect, level }) {
   const isActive = (id: string) =>
     breadcrumbs?.map((b: IBreadcrumb) => b?.id).includes(id);
 
@@ -113,33 +112,47 @@ function SubNavigation({ links, breadcrumbs, onSelect, level = 0 }) {
   );
 }
 
-
 //@ts-ignore
 export default function Navigation({ navigation, breadcrumbs, onSelect }) {
   if (navigation === undefined) return null;
 
-  const TopLink = ({ to, title, level = 0 }: { to: string, title: string, level: number }) => (
+  const TopLink = ({
+    to,
+    title,
+    level = 0,
+  }: {
+    to: string;
+    title: string;
+    level: Number;
+  }) => (
     <Link
       onClick={onSelect}
       to={to}
-      style={{ paddingLeft: `${level * 0.75 + 1}rem` }}
-      className="flex w-full items-center rounded-md bg-white py-1 pr-2 font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+      style={{ paddingLeft: `${(level as number) * 0.75 + 1}rem` }}
+      className="flex w-full items-center rounded-md bg-white py-1 pr-2 font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+    >
       {title}
     </Link>
   );
 
-  const { fields: { zone }} = navigation;
-  const isSubLevel = zone.fields.name !== DEFAULT_ZONE;
+  const {
+    fields: { zone },
+  } = navigation;
+  const showDefaultZone = zone.fields.name !== "knowledge-zone";
 
   return (
     <nav className="flex-1 space-y-1 bg-white px-2 pb-10" aria-label="Sidebar">
-      {isSubLevel && <TopLink to="/" title={KNOWLEDGE_ZONE} level={0} />}
-      <TopLink to={`/${zone.sys.id}`} title={zone.fields.title} level={isSubLevel ? 1 : 0} />
+      {showDefaultZone && <TopLink to="/" title={KNOWLEDGE_ZONE} level={0} />}
+      <TopLink
+        to={`/${zone.sys.id}`}
+        title={zone.fields.title}
+        level={new Number(showDefaultZone)}
+      />
       <SubNavigation
         onSelect={onSelect}
         links={navigation.fields.links}
         breadcrumbs={breadcrumbs}
-        level={isSubLevel ? 1 : 0}
+        level={new Number(showDefaultZone)}
       />
     </nav>
   );

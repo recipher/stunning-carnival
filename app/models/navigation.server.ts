@@ -69,7 +69,9 @@ const mapNavigations = async (entry: INavigation) => ({
     isRoot: entry.fields.isRoot,
     links: await populateAllLinks(entry.fields.links),
     zone: mapZone(entry.fields.zone),
-    entry: entry.fields.entry ? mapEntry(entry.fields.entry as IArticle) : undefined,
+    entry: entry.fields.entry
+      ? mapEntry(entry.fields.entry as IArticle)
+      : undefined,
   },
 });
 
@@ -85,12 +87,7 @@ const populateLinkLinks = async (links: ILinkables): Promise<any> =>
   populateLinks(links, "link", "fields.title,fields.url", mapLinks);
 
 const populateArticleLinks = async (links: ILinkables): Promise<any> =>
-  populateLinks(
-    links,
-    "article",
-    "fields.title,fields.zone",
-    mapArticles
-  );
+  populateLinks(links, "article", "fields.title,fields.zone", mapArticles);
 
 const populateLinks = async (
   links: ILinkables,
@@ -112,9 +109,9 @@ const populateLinks = async (
 
 const populateAllLinks = async (links: ILinkables): Promise<any> => {
   if (links === undefined) return links;
-  links = links.filter((link: any) => link !== undefined);  
+  links = links.filter((link: any) => link !== undefined);
   if (links === undefined) return links;
-  
+
   const ids: Array<any> = links.map((link) => link.sys.id);
 
   const n = await populateNavigationLinks(links);

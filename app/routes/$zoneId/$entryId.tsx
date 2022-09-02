@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData, useParams } from "@remix-run/react";
 import { notFound } from "remix-utils";
@@ -16,6 +16,12 @@ import useNavigation from "~/hooks/useNavigation";
 
 import { requireProfile } from "~/auth/auth.server";
 import type { Profile } from "~/auth/auth.server";
+
+export const meta: MetaFunction = ({ data, parentsData }) => {
+  const zone = parentsData["routes/$zoneId"].zone?.fields.title;
+  const entry = data.entry?.fields.title;
+  return { title: `Safeguard Global | ${zone} | ${entry}` };
+};
 
 type LoaderData = {
   entry: NonNullable<Awaited<ReturnType<typeof getArticle>>>;

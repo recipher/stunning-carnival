@@ -24,6 +24,7 @@ import ErrorPage from "~/components/500";
 
 import { requireProfile } from "~/auth/auth.server";
 import type { Profile } from "~/auth/auth.server";
+import type { IZone } from "../../@types/generated/contentful";
 
 import { getNavigation } from "~/models/navigation.server";
 import determineBreadcrumbs from "~/helpers/determineBreadcrumbs";
@@ -32,6 +33,7 @@ import type { IBreadcrumb } from "../helpers/determineBreadcrumbs";
 
 export type LoaderData = {
   navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
+  zone: IZone | undefined;
   profile: Profile;
 };
 
@@ -44,7 +46,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const navigation = await getNavigation(zoneId);
   if (!navigation) throw notFound("Zone Not Found");
 
-  return json<LoaderData>({ navigation, profile });
+  return json<LoaderData>({
+    navigation,
+    profile,
+    zone: navigation.fields.zone,
+  });
 };
 
 export default function ZonePage() {
@@ -160,7 +166,11 @@ export default function ZonePage() {
             />
           </Link>
           <div className="mt-5 flex flex-grow flex-col">
-            <Navigation onSelect={() => {}} navigation={navigation} breadcrumbs={breadcrumbs} />
+            <Navigation
+              onSelect={() => {}}
+              navigation={navigation}
+              breadcrumbs={breadcrumbs}
+            />
           </div>
         </div>
       </div>

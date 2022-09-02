@@ -52,12 +52,25 @@ export default function Article({
       [BLOCKS.EMBEDDED_ASSET]: ({
         data: {
           //@ts-ignore
-          target: { sys, fields: { file, description } },
+          target: {
+            //@ts-ignore
+            sys,
+            //@ts-ignore
+            fields: { file, description },
+          },
         },
       }) => {
-        const type = file.contentType.split('/')[0];
+        const type = file.contentType.split("/")[0];
 
-        const image = ({ key, file, description }: { key: string, file: any, description: string }) => (
+        const image = ({
+          key,
+          file,
+          description,
+        }: {
+          key: string;
+          file: any;
+          description: string;
+        }) => (
           <img
             key={key}
             src={`https://${file.url}`}
@@ -67,7 +80,14 @@ export default function Article({
           />
         );
 
-        const video = ({ key, file }: { key: string, file: any, description: string }) => (
+        const video = ({
+          key,
+          file,
+        }: {
+          key: string;
+          file: any;
+          description: string;
+        }) => (
           <video key={key} controls>
             <source src={`https://${file.url}`} type={file.contentType} />
           </video>
@@ -76,7 +96,7 @@ export default function Article({
         //@ts-ignore
         const component = { image, video }[type];
 
-        return component ? component({ key: sys.id , file, description }) : null;
+        return component ? component({ key: sys.id, file, description }) : null;
       },
     },
   };
