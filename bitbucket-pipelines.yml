@@ -59,6 +59,8 @@ pipelines:
     develop:
       - step:
           <<: *Deploy
+          caches:
+            - node
           name: Deploy to acting-dev
           deployment: acting-dev
     main:
