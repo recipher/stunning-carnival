@@ -16,7 +16,7 @@ const toData = (sys: any, fields: any) =>
     : { id: sys.id, title: fields.title };
 
 const isMatch = (sys: any, fields: any, id: string) =>
-  fields?.entry ? id === fields.entry.sys.id : id === sys.id;
+  fields?.entry ? id === fields.entry.sys.id : id === sys?.id;
 
 const search = (links: any, id: string) => {
   const nodes: ITree = { item: undefined, child: undefined };

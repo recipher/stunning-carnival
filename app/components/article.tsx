@@ -52,17 +52,20 @@ export default function Article({
       [BLOCKS.EMBEDDED_ASSET]: ({
         data: {
           //@ts-ignore
-          target: { sys, fields },
+          target: { sys, fields: { file, description } },
         },
-      }) => (
-        <img
-          key={sys.id}
-          src={`https://${fields.file.url}`}
-          height={fields.file.details.image.height}
-          width={fields.file.details.image.width}
-          alt={fields.description}
-        />
-      ),
+      }) => {
+        // console.log(file.contentType);
+        return (
+          <img
+            key={sys.id}
+            src={`https://${file.url}`}
+            height={file.details.image.height}
+            width={file.details.image.width}
+            alt={description}
+          />
+        );
+      },
     },
   };
 
