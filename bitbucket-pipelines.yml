@@ -29,6 +29,7 @@ definitions:
         caches:
           - node
         script:
+          - npm run build
           - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           - unzip awscliv2.zip
           - ./aws/install
@@ -59,8 +60,6 @@ pipelines:
     develop:
       - step:
           <<: *Deploy
-          caches:
-            - node
           name: Deploy to acting-dev
           deployment: acting-dev
     main:
