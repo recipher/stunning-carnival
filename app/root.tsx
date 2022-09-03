@@ -11,11 +11,11 @@ import {
 import Progress from "~/components/progress";
 import ErrorPage from "~/components/500";
 
-import tailwindStylesheetUrl from "./styles/tailwind.css";
+import tailwindCss from "./styles/tailwind.css";
 
 export const links: LinksFunction = () => {
   return [
-    { rel: "stylesheet", href: tailwindStylesheetUrl },
+    { rel: "stylesheet", href: tailwindCss },
     { rel: "icon", href: "/_static/sgg.ico" },
   ];
 };
@@ -33,7 +33,7 @@ export default function Root() {
         <Meta />
         <Links />
       </head>
-      <body className="flex h-full min-h-screen flex-col">
+      <body className="font-inter flex h-full min-h-screen flex-col">
         <Progress />
         <Outlet />
         <ScrollRestoration />

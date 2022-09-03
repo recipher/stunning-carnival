@@ -27,6 +27,7 @@ const Positions = ({ positions = [] }) => {
             />
             <div className="relative flex justify-center">
               <div className="-mt-6 border-l-2 absolute h-6 border-gray-200 top-0" />
+              {/*@ts-ignore*/}
               <Position {...position} ix={ix} />
             </div>
           </li>
@@ -75,7 +76,7 @@ export default function Team({
       <div className="flex flex-col justify-center items-center">
         <div className="container mx-auto text-center">
           <div className="flex">
-            {positions && positions.map((position, ix) => (
+            {positions && positions.map((position: any, ix: number) => (
               <Position key={ix} {...position} />
             ))}
           </div>

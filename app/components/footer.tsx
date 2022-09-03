@@ -1,5 +1,4 @@
-/* This example requires Tailwind CSS v2.0+ */
-const navigation = [
+const socials = [
   {
     name: "Facebook",
     href: "https://www.facebook.com/safeguardglobal",
@@ -76,16 +75,16 @@ export default function Footer() {
     <footer className="bg-white md:pl-64">
       <div className="mx-8 max-w-4xl py-12 md:flex md:items-center md:justify-between md:px-8 xl:pl-0">
         <div className="flex justify-center space-x-6 md:order-2">
-          {navigation.map((item) => (
+          {socials.map((social) => (
             <a
-              key={item.name}
-              href={item.href}
+              key={social.name}
+              href={social.href}
               rel="noreferrer"
               target="_blank"
               className="text-gray-400 hover:text-gray-500"
             >
-              <span className="sr-only">{item.name}</span>
-              <item.icon className="h-6 w-6" aria-hidden="true" />
+              <span className="sr-only">{social.name}</span>
+              <social.icon className="h-6 w-6" aria-hidden="true" />
             </a>
           ))}
         </div>
