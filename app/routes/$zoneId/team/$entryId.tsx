@@ -3,13 +3,12 @@ import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData, useParams } from "@remix-run/react";
 import { notFound } from "remix-utils";
-import type { Document } from "@contentful/rich-text-types";
 
-import Article from "~/components/article";
+import Team from "~/components/team";
 import ErrorMessage from "~/components/error";
 import Breadcrumbs from "~/components/breadcrumbs";
 
-import { getArticle } from "~/models/article.server";
+import { getTeam } from "~/models/team.server";
 import determineBreadcrumbs from "~/helpers/determineBreadcrumbs";
 import type { IBreadcrumb } from "~/helpers/determineBreadcrumbs";
 import useNavigation from "~/hooks/useNavigation";
@@ -24,27 +23,27 @@ export const meta: MetaFunction = ({ data, parentsData }) => {
 };
 
 type LoaderData = {
-  entry: NonNullable<Awaited<ReturnType<typeof getArticle>>>;
-  profile: Profile;
+  entry: NonNullable<Awaited<ReturnType<typeof getTeam>>>;
+  profile: Profile | undefined;
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const { entryId, zoneId } = params;
   if (!zoneId || !entryId) throw notFound("Not Found");
 
-  const profile = await requireProfile(request);
+  const profile = undefined; //await requireProfile(request);
 
-  const entry = await getArticle(entryId);
+  const entry = await getTeam(entryId);
   if (!entry) throw notFound("Not Found");
 
   return json<LoaderData>({ entry, profile });
 };
 
-export default function EntryPage() {
+export default function TeamPage() {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<IBreadcrumb>>([]);
 
   const { entry } = useLoaderData() as LoaderData;
-  const { title, contents, zone } = entry.fields;
+  const { title, zone } = entry.fields;
 
   const { zoneId, entryId } = useParams();
 
@@ -58,11 +57,7 @@ export default function EntryPage() {
   return (
     <>
       <Breadcrumbs zone={zone} breadcrumbs={breadcrumbs} />
-      <Article
-        title={title}
-        document={contents as Document}
-        zoneId={zoneId as string}
-      />
+      <Team title={title as string} zoneId={zoneId as string} />
     </>
   );
 }

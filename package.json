@@ -16,7 +16,7 @@
     "test": "vitest",
     "typecheck": "tsc -b",
     "validate": "run-p \"test -- --run\" lint typecheck",
-    "codegen": "contentful-typescript-codegen --output @types/generated/contentful.d.ts"
+    "typegen": "npx contentful-typescript-codegen --output @types/generated/contentful.d.ts"
   },
   "prettier": {},
   "eslintIgnore": [

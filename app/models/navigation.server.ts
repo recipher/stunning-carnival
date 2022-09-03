@@ -5,8 +5,9 @@ import resolve from "contentful-resolve-response";
 import type {
   INavigation,
   IArticle,
-  ILink,
+  ILink as IExternalLink,
   IZone,
+  ITeam,
 } from "../../@types/generated/contentful";
 
 import { getCacheByKey, createCache, deleteCache } from "./cache.server";
@@ -14,13 +15,13 @@ import { getCacheByKey, createCache, deleteCache } from "./cache.server";
 import { DEFAULT_ZONE } from "./zone.server";
 import type { Sys } from "contentful";
 
-type ILinkable = IArticle | ILink | INavigation;
-type ILinkables = Array<ILinkable> | undefined;
+type ILink = IArticle | ITeam | IExternalLink | INavigation;
+type ILinks = Array<ILink> | undefined;
 
-const idsFor = (links: ILinkables = [], contentType: string): string =>
+const idsFor = (links: ILinks = [], contentType: string): string =>
   links
-    .filter((link: ILinkable) => link.sys.contentType?.sys.id === contentType)
-    .map((link: ILinkable) => link.sys.id)
+    .filter((link: ILink) => link.sys.contentType?.sys.id === contentType)
+    .map((link: ILink) => link.sys.id)
     .join(",");
 
 const mapSys = (sys: Sys | undefined): any => ({
@@ -48,12 +49,21 @@ const mapEntry = (entry: IArticle) => ({
   },
 });
 
-const mapLinks = (entry: ILink) => ({
+const mapExternalLinks = (entry: IExternalLink) => ({
   sys: mapSys(entry.sys),
   fields: { ...entry.fields },
 });
 
 const mapArticles = (entry: IArticle) => ({
+  sys: mapSys(entry.sys),
+  fields: {
+    name: entry.fields.name,
+    title: entry.fields.title,
+    zone: mapZone(entry.fields.zone),
+  },
+});
+
+const mapTeams = (entry: ITeam) => ({
   sys: mapSys(entry.sys),
   fields: {
     name: entry.fields.name,
@@ -75,7 +85,7 @@ const mapNavigations = async (entry: INavigation) => ({
   },
 });
 
-const populateNavigationLinks = async (links: ILinkables): Promise<any> =>
+const populateNavigationLinks = async (links: ILinks): Promise<any> =>
   populateLinks(
     links,
     "navigation",
@@ -83,14 +93,17 @@ const populateNavigationLinks = async (links: ILinkables): Promise<any> =>
     mapNavigations
   );
 
-const populateLinkLinks = async (links: ILinkables): Promise<any> =>
-  populateLinks(links, "link", "fields.title,fields.url", mapLinks);
+const populateExternalLinks = async (links: ILinks): Promise<any> =>
+  populateLinks(links, "link", "fields.title,fields.url", mapExternalLinks);
 
-const populateArticleLinks = async (links: ILinkables): Promise<any> =>
+const populateArticleLinks = async (links: ILinks): Promise<any> =>
   populateLinks(links, "article", "fields.title,fields.zone", mapArticles);
 
+const populateTeamLinks = async (links: ILinks): Promise<any> =>
+  populateLinks(links, "team", "fields.title,fields.zone", mapTeams);
+
 const populateLinks = async (
-  links: ILinkables,
+  links: ILinks,
   contentType: string,
   select: string,
   mapLinks: Function
@@ -107,17 +120,18 @@ const populateLinks = async (
   return mapPromises(resolved, async (entry: any) => mapLinks(entry));
 };
 
-const populateAllLinks = async (links: ILinkables): Promise<any> => {
+const populateAllLinks = async (links: ILinks): Promise<any> => {
   if (links === undefined) return links;
   links = links.filter((link: any) => link !== undefined);
 
   const ids: Array<any> = links.map((link) => link.sys.id);
 
   const n = await populateNavigationLinks(links);
-  const l = await populateLinkLinks(links);
+  const l = await populateExternalLinks(links);
   const a = await populateArticleLinks(links);
+  const t = await populateTeamLinks(links);
 
-  const populated = unnest([l, a, n]);
+  const populated = unnest([l, a, t, n]);
 
   const find = (id: string) => populated.find((link) => link.sys.id === id);
 
@@ -145,14 +159,15 @@ export async function getNavigation(
   let query: any = {
     content_type: "navigation",
     limit: 1,
+    include: 1,
     select:
       "sys.id,sys.contentType,fields.name,fields.links,fields.zone,fields.isRoot",
   };
 
   query =
     zoneId === undefined
-      ? { ...query, "fields.zone.fields.name": DEFAULT_ZONE }
-      : { ...query, "fields.zone.sys.id": zoneId };
+      ? { ...query, "fields.zone.fields.name": DEFAULT_ZONE, "fields.isRoot": true }
+      : { ...query, "fields.zone.sys.id": zoneId, "fields.isRoot": true };
 
   const entries = await contentful().getEntries<INavigation>(query);
   const [entry] = await populate(resolve(entries));

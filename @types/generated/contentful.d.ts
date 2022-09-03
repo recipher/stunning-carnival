@@ -76,7 +76,7 @@ export interface INavigationFields {
   zone?: IZone | undefined;
 
   /** Links */
-  links?: (IArticle | ILink | INavigation)[] | undefined;
+  links?: (IArticle | ILink | INavigation | ITeam)[] | undefined;
 
   /** IsRoot */
   isRoot?: boolean | undefined;
@@ -102,13 +102,21 @@ export interface INavigation extends Entry<INavigationFields> {
   };
 }
 
-export interface ISupportingDocumentSetFields {
-  /** Supporting Documents */
-  supportingDocuments?: ISupportiveDocuments[] | undefined;
+export interface IPersonFields {
+  /** Name */
+  name: string;
+
+  /** Photo */
+  photo?: Asset | undefined;
+
+  /** Bio */
+  bio?: string | undefined;
+
+  /** LinkedIn */
+  linkedIn?: string | undefined;
 }
 
-export interface ISupportingDocumentSet
-  extends Entry<ISupportingDocumentSetFields> {
+export interface IPerson extends Entry<IPersonFields> {
   sys: {
     id: string;
     type: string;
@@ -117,7 +125,7 @@ export interface ISupportingDocumentSet
     locale: string;
     contentType: {
       sys: {
-        id: "supportingDocumentSet";
+        id: "person";
         linkType: "ContentType";
         type: "Link";
       };
@@ -125,19 +133,18 @@ export interface ISupportingDocumentSet
   };
 }
 
-export interface ISupportiveDocumentsFields {
-  /** Country */
-  country: string;
+export interface IPositionFields {
+  /** Name */
+  name: string;
 
-  /** ICP */
-  icp?: string | undefined;
+  /** Person */
+  person?: IPerson | undefined;
 
-  /** Internal CSD */
-  internalCsd?: Asset | undefined;
+  /** Reports */
+  reports?: IPosition[] | undefined;
 }
 
-export interface ISupportiveDocuments
-  extends Entry<ISupportiveDocumentsFields> {
+export interface IPosition extends Entry<IPositionFields> {
   sys: {
     id: string;
     type: string;
@@ -146,7 +153,38 @@ export interface ISupportiveDocuments
     locale: string;
     contentType: {
       sys: {
-        id: "supportiveDocuments";
+        id: "position";
+        linkType: "ContentType";
+        type: "Link";
+      };
+    };
+  };
+}
+
+export interface ITeamFields {
+  /** Name */
+  name: string;
+
+  /** Positions */
+  positions?: IPosition[] | undefined;
+
+  /** Zone */
+  zone?: IZone | undefined;
+
+  /** Title */
+  title?: string | undefined;
+}
+
+export interface ITeam extends Entry<ITeamFields> {
+  sys: {
+    id: string;
+    type: string;
+    createdAt: string;
+    updatedAt: string;
+    locale: string;
+    contentType: {
+      sys: {
+        id: "team";
         linkType: "ContentType";
         type: "Link";
       };
@@ -183,8 +221,9 @@ export type CONTENT_TYPE =
   | "article"
   | "link"
   | "navigation"
-  | "supportingDocumentSet"
-  | "supportiveDocuments"
+  | "person"
+  | "position"
+  | "team"
   | "zone";
 
 export type LOCALE_CODE = "en-US" | "es";

@@ -21,7 +21,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   const entryId = firstEntry(navigation.fields.links?.at(0));
   if (!entryId) return redirect("/error");
 
-  return redirect(`/${zoneId}/${entryId}`);
+  return redirect(`/${zoneId}/article/${entryId}`);
 };
 
 export function ErrorBoundary({ error }: { error: Error }) {

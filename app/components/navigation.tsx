@@ -8,11 +8,12 @@ const classNames = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
 //@ts-ignore
 function Item({ item: { sys, fields }, style = {}, onSelect, className = "" }) {
+  console.log(sys)
   return sys.contentType?.sys.id !== "link" ? (
     <Link
       onClick={onSelect}
       key={sys.id}
-      to={`/${fields.zone.sys.id}/${sys.id}`}
+      to={`/${fields.zone.sys.id}/${sys.contentType.sys.id}/${sys.id}`}
       className={className}
       style={style}
     >

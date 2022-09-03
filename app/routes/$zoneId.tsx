@@ -35,14 +35,14 @@ import type { IBreadcrumb } from "../helpers/determineBreadcrumbs";
 export type LoaderData = {
   navigation: NonNullable<Awaited<ReturnType<typeof getNavigation>>>;
   zone: IZone | undefined;
-  profile: Profile;
+  profile: Profile | undefined;
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const { zoneId } = params;
   if (!zoneId) throw notFound("Zone Not Found");
 
-  const profile = await requireProfile(request);
+  const profile = undefined; //= await requireProfile(request);
 
   const navigation = await getNavigation(zoneId);
   if (!navigation) throw notFound("Zone Not Found");

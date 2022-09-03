@@ -12,7 +12,7 @@ export const action: ActionFunction = async ({ request }) => {
     credentials: "omit",
   })
     .then((response) => {
-      if (!response.ok) return console.log("something wrong happened"); // TODO: implement retry mechanic
+      if (!response.ok) return console.error(`Error sending queued request: ${route}`);
     })
     .catch((error) => console.error("error", error));
 
