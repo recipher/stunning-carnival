@@ -1,3 +1,5 @@
+import type { IPosition } from "../../../@types/generated/contentful";
+import { append } from "ramda";
 import Card from "./card";
 
 type TeamParams = {
@@ -5,6 +7,14 @@ type TeamParams = {
   positions: any;
   zoneId: string;
 };
+
+
+const flatten = (positions: any) =>
+  positions.reduce((flattened: Array<IPosition>, position: IPosition) =>
+    position.fields.reports
+      ? append(position, flatten(position.fields.reports))
+      : append(position, flattened)
+  , []).reverse();
 
 export default function Team({
   title,
@@ -19,11 +29,8 @@ export default function Team({
       </div>
       <div>
         <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
-          {positions.map((position: any, ix: number) => (
-            <li
-              key={position.sys.id}
-              className="col-span-1 flex flex-col py-4 rounded-lg bg-white text-center shadow"
-            >
+          {flatten(positions).map((position: any, ix: number) => (
+            <li key={position.sys.id}>
               <Card key={ix} {...position} />
             </li>
           ))}

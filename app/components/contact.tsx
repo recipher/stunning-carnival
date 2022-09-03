@@ -60,7 +60,7 @@ const LinkedInIcon = (props: any) => (
 export const Icons = {
   facebook: FacebookIcon,
   twitter: TwitterIcon,
-  linkedIn: LinkedInIcon,
+  linkedin: LinkedInIcon,
   youtube: YouTubeIcon,
   email: MailIcon,
   phone: PhoneIcon,
@@ -68,7 +68,7 @@ export const Icons = {
 
 export default function Contact({ name, value }: { name: string, value: string }) {
   //@ts-ignore
-  const Icon = Icons[name];
+  const Icon = Icons[name.toLowerCase()];
 
   if (name === 'email') value = `mailto:${value}`;
   if (name === 'phone') value = `tel:${value}`;

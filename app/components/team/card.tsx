@@ -1,35 +1,24 @@
-import { MailIcon, PhoneIcon } from '@heroicons/react/outline';
+import type { IContact } from '../../../@types/generated/contentful';
 
 import Photo from "./photo";
 import Contact from "../contact";
 
-const socials = [
-  { name: "linkedIn", url: "https://www.linkedin.com/company/safeguard-globl" },
-  { name: "email", url: "email@email.com" },
-  { name: "phone", url: "123-123-123" },
-];
-
 //@ts-ignore
-export default function Card({ fields: { name: position, person: { sys: { id }, fields: { name, photo }} }}) {
+export default function Card({ fields: { title, person: { sys: { id }, fields: { name, photo, contacts }} }}) {
   return (
-    <>
+    <div className="col-span-1 flex flex-col py-4 bg-white text-center border border-gray-200">
       <div className="flex flex-1 flex-col p-8 items-center">
-        <Photo name={name} photo={undefined} className="mx-auto h-32 w-32 flex-shrink-0 rounded-full" />
+        <Photo name={name} photo={photo} />
+        <span className="sr-only">Name</span>
         <h3 className="mt-6 text-sm font-medium text-gray-900">{name}</h3>
         <dl className="mt-1 flex flex-grow flex-col justify-between">
-          <dt className="sr-only">Title</dt>
-          <dd className="text-sm text-gray-500">{position}</dd>
-          <dt className="sr-only">Role</dt>
-          <dd className="mt-3">
-            <span className="rounded bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
-              Admin
-            </span>
-          </dd>
+          <dt className="sr-only">Position</dt>
+          <dd className="text-sm text-gray-500">{title}</dd>
         </dl>
       </div>
-      <div className="flex justify-center space-x-6 md:order-2">
-        {socials.map((social) => <Contact key={social.name} name={social.name} value={social.url} />)}
-      </div>
-    </>
+      {contacts &&<div className="flex justify-center space-x-6 md:order-2">
+        {contacts.map(({ sys: { id }, fields: { type, value }}: IContact) => <Contact key={id} name={type} value={value} />)}
+      </div>}
+    </div>
   );
 }

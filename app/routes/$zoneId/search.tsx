@@ -55,14 +55,14 @@ export default function EntryPage() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
-  return <ErrorMessage message="Server error" details={error.message} />;
+  return <ErrorMessage message="Server error" details={error.message} statusCode={500} />;
 }
 
 export function CatchBoundary() {
   const caught = useCatch();
 
   if (caught.status === 404) {
-    return <ErrorMessage message="Zone not found" />;
+    return <ErrorMessage message="Zone not found" statusCode={caught.status} />;
   }
 
   throw new Error(`Unexpected caught response with status: ${caught.status}`);

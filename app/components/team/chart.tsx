@@ -1,5 +1,3 @@
-import { Link } from "@remix-run/react";
-
 import Photo from "./photo";
 
 type TeamParams = {
@@ -38,23 +36,23 @@ const Positions = ({ positions = [] }) => {
 };
 
 //@ts-ignore
-const Position = ({ fields: { name: position, person: { sys: { id }, fields: { name, photo }}, reports }}) => {
+const Position = ({ fields: { title, person: { sys: { id }, fields: { name, photo }}, reports }}) => {
   return (
-<div className="text-center">
+    <div className="text-center">
       <div className="flex flex-col justify-center items-center">
         <div className="w-20 h-20">
-          <Photo name={name} photo={undefined} className="block rounded m-auto shadow-md" />
+          <Photo name={name} photo={photo} />
         </div>
-        <h3 className="mt-3 text-sm font-medium text-gray-900">{name}</h3>
+        <span className="sr-only">Name</span>
+        <h3 className="mt-1 text-md font-medium text-gray-900">{name}</h3>
         <dl className="flex flex-grow flex-col justify-between">
-          <dt className="sr-only">Title</dt>
-          <dd className="text-sm text-gray-500">{position}</dd>
-          <dt className="sr-only">Role</dt>
-          <dd className="mt-3">
+          <dt className="sr-only">Position</dt>
+          <dd className="text-sm text-gray-500">{title}</dd>
+          {/* <dd className="mt-3">
             <span className="rounded bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
               Admin
             </span>
-          </dd>
+          </dd> */}
         </dl>
       </div>
       {reports?.length > 0 && <Positions positions={reports} />}

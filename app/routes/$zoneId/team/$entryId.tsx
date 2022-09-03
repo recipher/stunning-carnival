@@ -50,7 +50,7 @@ export default function TeamPage() {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<IBreadcrumb>>([]);
 
   const { entry, view } = useLoaderData() as LoaderData;
-  const { title, positions, zone } = entry.fields;
+  const { title, positions, defaultView, zone } = entry.fields;
 
   const { zoneId, entryId } = useParams();
 
@@ -61,8 +61,10 @@ export default function TeamPage() {
       setBreadcrumbs(determineBreadcrumbs(navigation, entryId));
   }, [entryId, navigation]);
 
+  const selectedView = view || defaultView;
+
   //@ts-ignore
-  const View= view ? Views[view] || Chart : Chart;
+  const View = selectedView ? Views[selectedView] || Chart : Chart;
 
   return (
     <>
@@ -79,14 +81,14 @@ export default function TeamPage() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
-  return <ErrorMessage message="Server error" details={error.message} />;
+  return <ErrorMessage message="Server error" details={error.message} statusCode={500} />;
 }
 
 export function CatchBoundary() {
   const caught = useCatch();
 
   if (caught.status === 404) {
-    return <ErrorMessage message="Article not found" />;
+    return <ErrorMessage message="Article not found" statusCode={caught.status} />;
   }
 
   throw new Error(`Unexpected caught response with status: ${caught.status}`);
