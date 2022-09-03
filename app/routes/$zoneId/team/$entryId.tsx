@@ -4,7 +4,8 @@ import { json } from "@remix-run/node";
 import { useCatch, useLoaderData, useParams } from "@remix-run/react";
 import { notFound } from "remix-utils";
 
-import Team from "~/components/team";
+import Chart from "~/components/team/chart";
+import List from "~/components/team/list";
 import ErrorMessage from "~/components/error";
 import Breadcrumbs from "~/components/breadcrumbs";
 
@@ -23,6 +24,7 @@ export const meta: MetaFunction = ({ data, parentsData }) => {
 };
 
 type LoaderData = {
+  view: string | null;
   entry: NonNullable<Awaited<ReturnType<typeof getTeam>>>;
   profile: Profile | undefined;
 };
@@ -36,13 +38,18 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const entry = await getTeam(entryId);
   if (!entry) throw notFound("Not Found");
 
-  return json<LoaderData>({ entry, profile });
+  const url = new URL(request.url);
+  const view = url.searchParams.get('view');
+
+  return json<LoaderData>({ entry, profile, view });
 };
+
+const Views = { "chart": Chart, "list": List };
 
 export default function TeamPage() {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<IBreadcrumb>>([]);
 
-  const { entry } = useLoaderData() as LoaderData;
+  const { entry, view } = useLoaderData() as LoaderData;
   const { title, positions, zone } = entry.fields;
 
   const { zoneId, entryId } = useParams();
@@ -54,10 +61,18 @@ export default function TeamPage() {
       setBreadcrumbs(determineBreadcrumbs(navigation, entryId));
   }, [entryId, navigation]);
 
+  //@ts-ignore
+  const View= view ? Views[view] || Chart : Chart;
+
   return (
     <>
       <Breadcrumbs zone={zone} breadcrumbs={breadcrumbs} />
-      <Team title={title as string} positions={positions} zoneId={zoneId as string} />
+      <div className="hidden sm:block">
+        <View title={title as string} positions={positions} zoneId={zoneId as string} />
+      </div>
+      <div className="block sm:hidden">
+        <List title={title as string} positions={positions} zoneId={zoneId as string} />
+      </div>
     </>
   );
 }
