@@ -43,7 +43,7 @@ export default function TeamPage() {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<IBreadcrumb>>([]);
 
   const { entry } = useLoaderData() as LoaderData;
-  const { title, zone } = entry.fields;
+  const { title, positions, zone } = entry.fields;
 
   const { zoneId, entryId } = useParams();
 
@@ -57,7 +57,7 @@ export default function TeamPage() {
   return (
     <>
       <Breadcrumbs zone={zone} breadcrumbs={breadcrumbs} />
-      <Team title={title as string} zoneId={zoneId as string} />
+      <Team title={title as string} positions={positions} zoneId={zoneId as string} />
     </>
   );
 }
