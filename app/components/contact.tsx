@@ -1,4 +1,4 @@
-import { MailIcon, PhoneIcon } from '@heroicons/react/outline';
+import { MailIcon, PhoneIcon } from '@heroicons/react/solid';
 
 const FacebookIcon = (props: any) => (
   <svg fill="currentColor" viewBox="0 0 24 24" {...props}>

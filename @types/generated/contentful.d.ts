@@ -37,6 +37,31 @@ export interface IArticle extends Entry<IArticleFields> {
   };
 }
 
+export interface IContactFields {
+  /** Type */
+  type: "Email" | "Telephone" | "LinkedIn" | "Twitter";
+
+  /** Value */
+  value: string;
+}
+
+export interface IContact extends Entry<IContactFields> {
+  sys: {
+    id: string;
+    type: string;
+    createdAt: string;
+    updatedAt: string;
+    locale: string;
+    contentType: {
+      sys: {
+        id: "contact";
+        linkType: "ContentType";
+        type: "Link";
+      };
+    };
+  };
+}
+
 export interface ILinkFields {
   /** Name */
   name: string;
@@ -112,8 +137,8 @@ export interface IPersonFields {
   /** Bio */
   bio?: string | undefined;
 
-  /** LinkedIn */
-  linkedIn?: string | undefined;
+  /** Contacts */
+  contacts?: IContact[] | undefined;
 }
 
 export interface IPerson extends Entry<IPersonFields> {
@@ -165,6 +190,9 @@ export interface ITeamFields {
   /** Name */
   name: string;
 
+  /** Team */
+  team?: string | undefined;
+
   /** Positions */
   positions?: IPosition[] | undefined;
 
@@ -173,6 +201,9 @@ export interface ITeamFields {
 
   /** Title */
   title?: string | undefined;
+
+  /** Default View */
+  defaultView?: "list" | "chart" | undefined;
 }
 
 export interface ITeam extends Entry<ITeamFields> {
@@ -219,6 +250,7 @@ export interface IZone extends Entry<IZoneFields> {
 
 export type CONTENT_TYPE =
   | "article"
+  | "contact"
   | "link"
   | "navigation"
   | "person"

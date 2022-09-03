@@ -1,6 +1,13 @@
 import { MailIcon, PhoneIcon } from '@heroicons/react/outline';
 
 import Photo from "./photo";
+import Contact from "../contact";
+
+const socials = [
+  { name: "linkedIn", url: "https://www.linkedin.com/company/safeguard-globl" },
+  { name: "email", url: "email@email.com" },
+  { name: "phone", url: "123-123-123" },
+];
 
 //@ts-ignore
 export default function Card({ fields: { name: position, person: { sys: { id }, fields: { name, photo }} }}) {
@@ -20,27 +27,8 @@ export default function Card({ fields: { name: position, person: { sys: { id }, 
           </dd>
         </dl>
       </div>
-      <div>
-        <div className="-mt-px flex divide-x divide-gray-200">
-          <div className="flex w-0 flex-1">
-            <a
-              href={`mailto:${name}`}
-              className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500"
-            >
-              <MailIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-              <span className="ml-3">Email</span>
-            </a>
-          </div>
-          <div className="-ml-px flex w-0 flex-1">
-            <a
-              href={`tel:${name}`}
-              className="relative inline-flex w-0 flex-1 items-center justify-center rounded-br-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500"
-            >
-              <PhoneIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-              <span className="ml-3">Call</span>
-            </a>
-          </div>
-        </div>
+      <div className="flex justify-center space-x-6 md:order-2">
+        {socials.map((social) => <Contact key={social.name} name={social.name} value={social.url} />)}
       </div>
     </>
   );

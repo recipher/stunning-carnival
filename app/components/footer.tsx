@@ -5,6 +5,8 @@ const socials = [
   { name: "twitter", url: "https://twitter.com/Safeguard_Globl" },
   { name: "youtube", url: "https://www.youtube.com/channel/UCMEKxtP84b0ILsuH4OW-XnQ" },
   { name: "linkedIn", url: "https://www.linkedin.com/company/safeguard-globl" },
+  { name: "email", url: "https://www.linkedin.com/company/safeguard-globl" },
+  { name: "phone", url: "https://www.linkedin.com/company/safeguard-globl" },
 ];
 
 export default function Footer() {

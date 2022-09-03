@@ -22,7 +22,7 @@ export default function Team({
           {positions.map((position: any, ix: number) => (
             <li
               key={position.sys.id}
-              className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow"
+              className="col-span-1 flex flex-col py-4 rounded-lg bg-white text-center shadow"
             >
               <Card key={ix} {...position} />
             </li>
