@@ -8,7 +8,6 @@ const classNames = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
 //@ts-ignore
 function Item({ item: { sys, fields }, style = {}, onSelect, className = "" }) {
-  console.log(sys)
   return sys.contentType?.sys.id !== "link" ? (
     <Link
       onClick={onSelect}
