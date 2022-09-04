@@ -12,17 +12,22 @@ import Select from "./select";
 import extractHeadings, { slugify } from "../helpers/extractHeadings";
 import type { Heading } from "../helpers/extractHeadings";
 
+const MAX_HEADINGS = 3;
+
 type ArticleParams = {
   title: string;
   document: Document | undefined;
   zoneId: string;
 };
 
-const SkipLink = ({ value, children }: { value: string; children: any }) => (
-  <a className="no-underline" id={slugify(value)}>
-    {children}
-  </a>
-);
+const SkipLink = ({ value, children }: { value: string; children: any }) => {
+  const id = slugify(value);
+  return (
+    <a className="no-underline" id={slugify(id)} href={`#${id}`}>
+      {children}
+    </a>
+  );
+};
 
 export default function Article({
   title,
@@ -144,13 +149,9 @@ export default function Article({
   return (
     <div className="prose max-w-none py-6 prose-a:text-blue-600 hover:prose-a:text-blue-500">
       <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
-      {headings.length > 3 && (
+      {headings.length > MAX_HEADINGS && (
         <div className="not-prose">
-          <Select
-            label={"Jump to:"}
-            options={headings}
-            onSelect={scrollTo}
-          />
+          <Select label={"Jump to:"} options={headings} onSelect={scrollTo} />
         </div>
       )}
       {/* @ts-ignore */}

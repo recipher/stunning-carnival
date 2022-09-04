@@ -8,8 +8,8 @@ const classNames = (...classes: string[]) => classes.filter(Boolean).join(" ");
 export default function Card({
   className = "border",
   fields: {
-  //@ts-ignore
-  title,
+    //@ts-ignore
+    title,
     person: {
       //@ts-ignore
       fields: { name, photo, bio, contacts },

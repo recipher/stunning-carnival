@@ -1,5 +1,6 @@
 import { append } from "ramda";
-import { Block, Node, Inline, helpers } from "@contentful/rich-text-types";
+import { helpers } from "@contentful/rich-text-types";
+import type { Block, Node, Inline } from "@contentful/rich-text-types";
 
 export const slugify = (text: string) =>
   text
@@ -11,20 +12,20 @@ export const slugify = (text: string) =>
 export function documentToPlainTextString(root: Block | Inline) {
   const blockDivisor: string = " ";
   return (root as Block).content.reduce(
-    (acc: string, node: Node, i: number): string => {
-      let nodeTextValue: string = "";
+    (text: string, node: Node, i: number): string => {
+      let value: string = "";
 
       if (helpers.isText(node)) {
-        nodeTextValue = node.value;
+        value = node.value;
       } else if (helpers.isBlock(node) || helpers.isInline(node)) {
-        nodeTextValue = documentToPlainTextString(node);
-        if (!nodeTextValue.length) return acc;
+        value = documentToPlainTextString(node);
+        if (!value.length) return text;
       }
 
       const nextNode = root.content[i + 1];
       const isNextNodeBlock = nextNode && helpers.isBlock(nextNode);
       const divisor = isNextNodeBlock ? blockDivisor : "";
-      return acc + nodeTextValue + divisor;
+      return text + value + divisor;
     },
     ""
   );

@@ -42,7 +42,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const { zoneId } = params;
   if (!zoneId) throw notFound("Zone Not Found");
 
-  const profile = undefined; //await requireProfile(request);
+  const profile = await requireProfile(request);
 
   const navigation = await getNavigation(zoneId);
   if (!navigation) throw notFound("Zone Not Found");

@@ -1,5 +1,4 @@
-/* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
 
@@ -18,7 +17,9 @@ export default function Select({
   onSelect,
   options = [],
 }: SelectParams) {
-  const [selected, setSelected] = useState(unselected ? { text: unselected } : options[0]);
+  const [selected, setSelected] = useState(
+    unselected ? { text: unselected } : options[0]
+  );
 
   const onChange = (option: any) => {
     setSelected(option);
