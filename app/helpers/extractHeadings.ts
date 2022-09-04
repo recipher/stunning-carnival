@@ -1,59 +1,58 @@
-import type { INavigation } from "../../@types/generated/contentful";
+import { append } from "ramda";
+import { Block, Node, Inline, helpers } from "@contentful/rich-text-types";
 
-export type IBreadcrumb = {
-  id: string;
-  title: string;
-};
+export const slugify = (text: string) =>
+  text
+    .trim()
+    .replace(/[^A-Za-z0-9\s]/g, "")
+    .replace(/\s+/g, "-")
+    .toLowerCase();
 
-type ITree = {
-  item: IBreadcrumb | undefined;
-  child: any;
-};
+export function documentToPlainTextString(root: Block | Inline) {
+  const blockDivisor: string = " ";
+  return (root as Block).content.reduce(
+    (acc: string, node: Node, i: number): string => {
+      let nodeTextValue: string = "";
 
-export const slugify = (text: string) => 
-  text.trim().replace(/[^A-Za-z0-9\s]/g, '').replace(/\s+/g, '-').toLowerCase();
-
-const toData = (sys: any, fields: any) =>
-  fields.entry
-    ? { id: fields.entry.sys.id, title: fields.entry.fields.title }
-    : { id: sys.id, title: fields.title };
-
-const isMatch = (sys: any, fields: any, id: string) =>
-  fields?.entry ? id === fields.entry.sys.id : id === sys?.id;
-
-const search = (links: any, id: string) => {
-  const nodes: ITree = { item: undefined, child: undefined };
-
-  for (const { sys, fields } of links) {
-    if (isMatch(sys, fields, id)) {
-      nodes.item = toData(sys, fields);
-      break;
-    }
-    if (fields?.links) {
-      const result = search(fields.links, id);
-      if (result.item) {
-        nodes.item = toData(sys, fields);
-        nodes.child = result;
-        break;
+      if (helpers.isText(node)) {
+        nodeTextValue = node.value;
+      } else if (helpers.isBlock(node) || helpers.isInline(node)) {
+        nodeTextValue = documentToPlainTextString(node);
+        if (!nodeTextValue.length) return acc;
       }
-    }
-  }
-  return nodes;
+
+      const nextNode = root.content[i + 1];
+      const isNextNodeBlock = nextNode && helpers.isBlock(nextNode);
+      const divisor = isNextNodeBlock ? blockDivisor : "";
+      return acc + nodeTextValue + divisor;
+    },
+    ""
+  );
+}
+
+const HEADINGS = ["heading-1", "heading-2", "heading-3", "heading-4"];
+
+export type Heading = {
+  id: string;
+  text: string;
+  nodeType: string;
 };
 
-export default function (
-  navigation: INavigation,
-  id: string
-): Array<IBreadcrumb> {
-  if (navigation === undefined) return [];
+export default function extractHeadings(
+  root: Block | Inline,
+  headings: Array<Heading> = []
+) {
+  if (!root || !root.content) return [];
 
-  let path = [],
-    tree = search(navigation.fields.links, id);
-
-  while (tree) {
-    if (tree.item) path.push(tree.item);
-    tree = tree.child;
-  }
-
-  return path as Array<IBreadcrumb>;
+  return (root as Block).content.reduce(
+    (headings: Array<Heading>, node: Node, i: number): Array<Heading> => {
+      if (helpers.isBlock(node) && HEADINGS.includes(node.nodeType)) {
+        const text = documentToPlainTextString(node);
+        const heading = { text, id: slugify(text), nodeType: node.nodeType };
+        return append(heading, extractHeadings(node, headings));
+      }
+      return headings;
+    },
+    headings
+  );
 }

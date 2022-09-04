@@ -12,7 +12,8 @@ export const action: ActionFunction = async ({ request }) => {
     credentials: "omit",
   })
     .then((response) => {
-      if (!response.ok) return console.error(`Error sending queued request: ${route}`);
+      if (!response.ok)
+        return console.error(`Error sending queued request: ${route}`);
     })
     .catch((error) => console.error("error", error));
 

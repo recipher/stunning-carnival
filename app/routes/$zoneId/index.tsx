@@ -4,9 +4,10 @@ import { redirect } from "@remix-run/node";
 import { getNavigation } from "~/models/navigation.server";
 
 const firstEntry = (link: any) => {
-  const first = link?.sys.contentType.sys.id === "navigation" ? link.fields.entry : link;
+  const first =
+    link?.sys.contentType.sys.id === "navigation" ? link.fields.entry : link;
   return { entryId: first.sys.id, contentType: first.sys.contentType.sys.id };
-}
+};
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { zoneId } = params;

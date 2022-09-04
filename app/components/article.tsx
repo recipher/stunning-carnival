@@ -8,7 +8,9 @@ import {
 } from "@contentful/rich-text-types";
 import type { Document } from "@contentful/rich-text-types";
 
+import Select from "./select";
 import extractHeadings, { slugify } from "../helpers/extractHeadings";
+import type { Heading } from "../helpers/extractHeadings";
 
 type ArticleParams = {
   title: string;
@@ -16,7 +18,7 @@ type ArticleParams = {
   zoneId: string;
 };
 
-const SkipLink = ({ value, children }: { value: string, children: any }) => (
+const SkipLink = ({ value, children }: { value: string; children: any }) => (
   <a className="no-underline" id={slugify(value)}>
     {children}
   </a>
@@ -42,22 +44,22 @@ export default function Article({
     renderNode: {
       [BLOCKS.HEADING_1]: (node: any, children: any) => (
         <SkipLink value={node.content[0].value}>
-          <h1>{children}</h1>
+          <h1 className="mt-8">{children}</h1>
         </SkipLink>
       ),
       [BLOCKS.HEADING_2]: (node: any, children: any) => (
         <SkipLink value={node.content[0].value}>
-          <h2>{children}</h2>
+          <h2 className="mt-8">{children}</h2>
         </SkipLink>
       ),
       [BLOCKS.HEADING_3]: (node: any, children: any) => (
         <SkipLink value={node.content[0].value}>
-          <h3>{children}</h3>
+          <h3 className="mt-8">{children}</h3>
         </SkipLink>
       ),
       [BLOCKS.HEADING_4]: (node: any, children: any) => (
         <SkipLink value={node.content[0].value}>
-          <h4>{children}</h4>
+          <h4 className="mt-8">{children}</h4>
         </SkipLink>
       ),
       [INLINES.HYPERLINK]: (node: any, children: any) => (
@@ -76,7 +78,11 @@ export default function Article({
           //@ts-ignore
           target: { sys, fields },
         },
-      }) => <Link to={`/${fields.zone.sys.id}/${sys.contentType.sys.id}/${sys.id}`}>{fields.title}</Link>,
+      }) => (
+        <Link to={`/${fields.zone.sys.id}/${sys.contentType.sys.id}/${sys.id}`}>
+          {fields.title}
+        </Link>
+      ),
       [BLOCKS.EMBEDDED_ASSET]: ({
         data: {
           //@ts-ignore
@@ -129,9 +135,24 @@ export default function Article({
     },
   };
 
+  const headings = extractHeadings(document);
+
+  const scrollTo = ({ id }: Heading) => {
+    window.document.getElementById(id)?.scrollIntoView({ block: "center" });
+  };
+
   return (
     <div className="prose max-w-none py-6 prose-a:text-blue-600 hover:prose-a:text-blue-500">
       <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
+      {headings.length > 3 && (
+        <div className="not-prose">
+          <Select
+            label={"Jump to:"}
+            options={headings}
+            onSelect={scrollTo}
+          />
+        </div>
+      )}
       {/* @ts-ignore */}
       {document && documentToReactComponents(document, options)}
     </div>

@@ -1,4 +1,4 @@
-import { MailIcon, PhoneIcon } from '@heroicons/react/solid';
+import { MailIcon, PhoneIcon } from "@heroicons/react/solid";
 
 const FacebookIcon = (props: any) => (
   <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
@@ -66,19 +66,25 @@ export const Icons = {
   phone: PhoneIcon,
 };
 
-export default function Contact({ name, value }: { name: string, value: string }) {
+export default function Contact({
+  name,
+  value,
+}: {
+  name: string;
+  value: string;
+}) {
   //@ts-ignore
   const Icon = Icons[name.toLowerCase()];
 
-  if (name === 'email') value = `mailto:${value}`;
-  if (name === 'phone') value = `tel:${value}`;
+  if (name === "email") value = `mailto:${value}`;
+  if (name === "phone") value = `tel:${value}`;
 
   return (
     <a
       href={value}
       rel="noreferrer"
       target="_blank"
-      className="text-gray-400 hover:text-gray-500 outline-none"
+      className="text-gray-400 outline-none hover:text-gray-500"
     >
       <span className="sr-only">{name}</span>
       <Icon className="h-6 w-6" aria-hidden="true" />

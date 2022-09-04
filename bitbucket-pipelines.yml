@@ -14,7 +14,7 @@ definitions:
         condition:
           changesets:
             includePaths:
-              - package-lock.json    
+              - package-lock.json
     - step: &Install
         name: Install
         caches:

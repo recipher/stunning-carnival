@@ -166,7 +166,11 @@ export async function getNavigation(
 
   query =
     zoneId === undefined
-      ? { ...query, "fields.zone.fields.name": DEFAULT_ZONE, "fields.isRoot": true }
+      ? {
+          ...query,
+          "fields.zone.fields.name": DEFAULT_ZONE,
+          "fields.isRoot": true,
+        }
       : { ...query, "fields.zone.sys.id": zoneId, "fields.isRoot": true };
 
   const entries = await contentful().getEntries<INavigation>(query);

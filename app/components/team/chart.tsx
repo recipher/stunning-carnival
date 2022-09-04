@@ -16,8 +16,8 @@ const Positions = ({ positions = [] }) => {
   if (positions.length === 0) return null;
 
   return (
-    <ul className="flex flex-row mt-10 justify-center">
-      <div className="-mt-10 border-l-2 absolute h-10 border-gray-200" />
+    <ul className="mt-10 flex flex-row justify-center">
+      <div className="absolute -mt-10 h-10 border-l-2 border-gray-200" />
       {positions.map((position, ix) => {
         const len = positions.length;
         return (
@@ -25,12 +25,12 @@ const Positions = ({ positions = [] }) => {
             <div
               style={{
                 left: ix === 0 ? "50%" : 0,
-                right: ix === len - 1 ? "50%" : 0
+                right: ix === len - 1 ? "50%" : 0,
               }}
-              className="border-t-2 absolute h-8 border-gray-200 top-0"
+              className="absolute top-0 h-8 border-t-2 border-gray-200"
             />
             <div className="relative flex justify-center">
-              <div className="-mt-6 border-l-2 absolute h-6 border-gray-200 top-0" />
+              <div className="absolute top-0 -mt-6 h-6 border-l-2 border-gray-200" />
               {/*@ts-ignore*/}
               <Position {...position} ix={ix} />
             </div>
@@ -43,13 +43,21 @@ const Positions = ({ positions = [] }) => {
 
 //@ts-ignore
 const Position = (props) => {
-  const { fields: { title, person: { fields: { name, photo }}, reports }} = props;
+  const {
+    fields: {
+      title,
+      person: {
+        fields: { name, photo },
+      },
+      reports,
+    },
+  } = props;
 
   const [showCard, setShowCard] = useState(false);
 
   const showModal = (e: any) => {
-    e.stopPropagation(); 
-    setShowCard(true); 
+    e.stopPropagation();
+    setShowCard(true);
   };
 
   return (
@@ -58,12 +66,17 @@ const Position = (props) => {
         <Card {...props} className="" />
       </Modal>
       <div className="text-center">
-        <div className="flex flex-col justify-center items-center">
-          <div className="w-20 h-20 cursor-pointer" onClick={showModal}>
+        <div className="flex flex-col items-center justify-center">
+          <div className="h-20 w-20 cursor-pointer" onClick={showModal}>
             <Photo name={name} photo={photo} />
           </div>
           <span className="sr-only">Name</span>
-          <h3 className="mt-1 text-md font-medium text-gray-900 cursor-pointer" onClick={showModal}>{name}</h3>
+          <h3
+            className="text-md mt-1 cursor-pointer font-medium text-gray-900"
+            onClick={showModal}
+          >
+            {name}
+          </h3>
           <dl className="flex flex-grow flex-col justify-between">
             <dt className="sr-only">Position</dt>
             <dd className="text-sm text-gray-500">{title}</dd>
@@ -78,7 +91,7 @@ const Position = (props) => {
       </div>
     </>
   );
-}
+};
 
 export default function Team({
   title,
@@ -86,16 +99,16 @@ export default function Team({
   description,
   zoneId,
 }: TeamParams) {
-
   return (
     <>
       <Article title={title} document={description} zoneId={zoneId} />
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col items-center justify-center">
         <div className="container mx-auto text-center">
           <div className="flex">
-            {positions && positions.map((position: any, ix: number) => (
-              <Position key={ix} {...position} />
-            ))}
+            {positions &&
+              positions.map((position: any, ix: number) => (
+                <Position key={ix} {...position} />
+              ))}
           </div>
         </div>
       </div>

@@ -39,12 +39,12 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   if (!entry) throw notFound("Not Found");
 
   const url = new URL(request.url);
-  const view = url.searchParams.get('view');
+  const view = url.searchParams.get("view");
 
   return json<LoaderData>({ entry, profile, view });
 };
 
-const Views = { "chart": Chart, "list": List };
+const Views = { chart: Chart, list: List };
 
 export default function TeamPage() {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<IBreadcrumb>>([]);
@@ -70,10 +70,20 @@ export default function TeamPage() {
     <>
       <Breadcrumbs zone={zone} breadcrumbs={breadcrumbs} />
       <div className="hidden sm:block">
-        <View title={team as string} description={description} positions={positions} zoneId={zoneId as string} />
+        <View
+          title={team as string}
+          description={description}
+          positions={positions}
+          zoneId={zoneId as string}
+        />
       </div>
       <div className="block sm:hidden">
-        <List title={team as string} description={description} positions={positions} zoneId={zoneId as string} />
+        <List
+          title={team as string}
+          description={description}
+          positions={positions}
+          zoneId={zoneId as string}
+        />
       </div>
     </>
   );
@@ -81,7 +91,13 @@ export default function TeamPage() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
-  return <ErrorMessage message="Server error" details={error.message} statusCode={500} />;
+  return (
+    <ErrorMessage
+      message="Server error"
+      details={error.message}
+      statusCode={500}
+    />
+  );
 }
 
 export function CatchBoundary() {

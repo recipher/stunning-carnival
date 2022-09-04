@@ -5,7 +5,7 @@ export default function Error({
 }: {
   message: string;
   details?: string;
-  statusCode: number
+  statusCode: number;
 }) {
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-grow flex-col px-4 sm:px-6 lg:px-8">

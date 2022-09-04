@@ -13,11 +13,15 @@ type TeamParams = {
 };
 
 const flatten = (positions: any) =>
-  positions.reduce((flattened: Array<IPosition>, position: IPosition) =>
-    position.fields.reports
-      ? append(position, flatten(position.fields.reports))
-      : append(position, flattened)
-  , []).reverse();
+  positions
+    .reduce(
+      (flattened: Array<IPosition>, position: IPosition) =>
+        position.fields.reports
+          ? append(position, flatten(position.fields.reports))
+          : append(position, flattened),
+      []
+    )
+    .reverse();
 
 export default function Team({
   title,
@@ -25,7 +29,6 @@ export default function Team({
   description,
   zoneId,
 }: TeamParams) {
-
   return (
     <>
       <Article title={title} document={description} zoneId={zoneId} />
