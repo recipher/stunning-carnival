@@ -21,7 +21,6 @@ const flatten = (positions: any) =>
 
 export default function Team({
   title,
-  team,
   positions,
   description,
   zoneId,
