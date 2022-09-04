@@ -70,7 +70,7 @@ pipelines:
     develop:
       # - step: *ClearCache
       - step: *Install
-      - step: *Lint
+      # - step: *Lint
       - step: *Typecheck
       - step: *Build
       - step:
@@ -80,7 +80,7 @@ pipelines:
     main:
       # - step: *ClearCache
       - step: *Install
-      - step: *Lint
+      # - step: *Lint
       - step: *Typecheck
       - step: *Build
       - step:
