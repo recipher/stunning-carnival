@@ -78,6 +78,7 @@ pipelines:
           name: Deploy to acting-dev
           deployment: acting-dev
     main:
+      - step: *ClearCache
       - step: *Install
       - step: *Lint
       - step: *Typecheck
