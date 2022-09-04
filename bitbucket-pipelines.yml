@@ -1,48 +1,48 @@
 definitions:
   steps:
-    # - step: &ClearCache
-    #     # From: https://bitbucket.org/blog/automatically-refresh-caches-when-build-dependencies-are-updated
-    #     # Limitations:
-    #     # * Caches are currently global and shared across multiple branches. When the cache is invalidated it will clear the cache for all branches, until it is cached again.
-    #     # * Changesets only find files in the last commit, so if multiple commits are pushed, only the last one will be checked for the includePaths section.
-    #     name: Delete all caches if changes in the build dependencies
-    #     script:
-    #       - pipe: atlassian/bitbucket-clear-cache:3.1.1
-    #         variables:
-    #           BITBUCKET_USERNAME: $BITBUCKET_USER_NAME
-    #           BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
-    #     condition:
-    #       changesets:
-    #         includePaths:
-    #           - package-lock.json    
+    - step: &ClearCache
+        # From: https://bitbucket.org/blog/automatically-refresh-caches-when-build-dependencies-are-updated
+        # Limitations:
+        # * Caches are currently global and shared across multiple branches. When the cache is invalidated it will clear the cache for all branches, until it is cached again.
+        # * Changesets only find files in the last commit, so if multiple commits are pushed, only the last one will be checked for the includePaths section.
+        name: Delete all caches if changes in the build dependencies
+        script:
+          - pipe: atlassian/bitbucket-clear-cache:3.1.1
+            variables:
+              BITBUCKET_USERNAME: $BITBUCKET_USER_NAME
+              BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+        condition:
+          changesets:
+            includePaths:
+              - package-lock.json    
     - step: &Install
         name: Install
-        # caches:
-        #   - node
+        caches:
+          - node
         script:
           - npm i
     - step: &Lint
         name: Lint
-        # caches:
-        #   - node
+        caches:
+          - node
         script:
           - npm run lint
     - step: &Typecheck
         name: Typecheck
-        # caches:
-        #   - node
+        caches:
+          - node
         script:
           - npm run typecheck
     - step: &Build
         name: Build
-        # caches:
-        #   - node
+        caches:
+          - node
         script:
           - npm run build
     - step: &Deploy
         name: Deploy
-        # caches:
-        #   - node
+        caches:
+          - node
         script:
           - npm run build
           - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -70,7 +70,7 @@ pipelines:
     develop:
       # - step: *ClearCache
       - step: *Install
-      # - step: *Lint
+      - step: *Lint
       - step: *Typecheck
       - step: *Build
       - step:
@@ -80,7 +80,7 @@ pipelines:
     main:
       # - step: *ClearCache
       - step: *Install
-      # - step: *Lint
+      - step: *Lint
       - step: *Typecheck
       - step: *Build
       - step:
