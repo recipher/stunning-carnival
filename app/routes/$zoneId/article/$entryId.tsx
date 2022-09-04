@@ -14,7 +14,7 @@ import determineBreadcrumbs from "~/helpers/determineBreadcrumbs";
 import type { IBreadcrumb } from "~/helpers/determineBreadcrumbs";
 import useNavigation from "~/hooks/useNavigation";
 
-// import { requireProfile } from "~/auth/auth.server";
+import { requireProfile } from "~/auth/auth.server";
 import type { Profile } from "~/auth/auth.server";
 
 export const meta: MetaFunction = ({ data, parentsData }) => {
@@ -32,7 +32,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const { entryId, zoneId } = params;
   if (!zoneId || !entryId) throw notFound("Not Found");
 
-  const profile = undefined; //await requireProfile(request);
+  const profile = await requireProfile(request);
 
   const entry = await getArticle(entryId);
   if (!entry) throw notFound("Not Found");

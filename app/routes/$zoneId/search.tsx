@@ -2,7 +2,7 @@ import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useCatch, useLoaderData } from "@remix-run/react";
 
-// import { requireProfile } from "~/auth/auth.server";
+import { requireProfile } from "~/auth/auth.server";
 import { search } from "~/models/article.server";
 import ErrorMessage from "~/components/error";
 
@@ -22,7 +22,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
 
-  // await requireProfile(request);
+  await requireProfile(request);
 
   const entries = await search(q as string);
 
