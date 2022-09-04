@@ -32,7 +32,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const { entryId, zoneId } = params;
   if (!zoneId || !entryId) throw notFound("Not Found");
 
-  const profile = await requireProfile(request);
+  const profile = undefined; //await requireProfile(request);
 
   const entry = await getArticle(entryId);
   if (!entry) throw notFound("Not Found");

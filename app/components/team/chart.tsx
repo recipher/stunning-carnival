@@ -1,6 +1,9 @@
+import { useState } from "react";
 import type { Document } from "@contentful/rich-text-types";
 import Photo from "./photo";
 import Article from "../article";
+import Card from "./card";
+import Modal from "../modal";
 
 type TeamParams = {
   title: string;
@@ -39,27 +42,41 @@ const Positions = ({ positions = [] }) => {
 };
 
 //@ts-ignore
-const Position = ({ fields: { title, person: { fields: { name, photo }}, reports }}) => {
+const Position = (props) => {
+  const { fields: { title, person: { fields: { name, photo }}, reports }} = props;
+
+  const [showCard, setShowCard] = useState(false);
+
+  const showModal = (e: any) => {
+    e.stopPropagation(); 
+    setShowCard(true); 
+  };
+
   return (
-    <div className="text-center">
-      <div className="flex flex-col justify-center items-center">
-        <div className="w-20 h-20">
-          <Photo name={name} photo={photo} />
+    <>
+      <Modal open={showCard} setOpen={setShowCard}>
+        <Card {...props} className="" />
+      </Modal>
+      <div className="text-center">
+        <div className="flex flex-col justify-center items-center">
+          <div className="w-20 h-20 cursor-pointer" onClick={showModal}>
+            <Photo name={name} photo={photo} />
+          </div>
+          <span className="sr-only">Name</span>
+          <h3 className="mt-1 text-md font-medium text-gray-900 cursor-pointer" onClick={showModal}>{name}</h3>
+          <dl className="flex flex-grow flex-col justify-between">
+            <dt className="sr-only">Position</dt>
+            <dd className="text-sm text-gray-500">{title}</dd>
+            {/* <dd className="mt-3">
+              <span className="rounded bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
+                Admin
+              </span>
+            </dd> */}
+          </dl>
         </div>
-        <span className="sr-only">Name</span>
-        <h3 className="mt-1 text-md font-medium text-gray-900">{name}</h3>
-        <dl className="flex flex-grow flex-col justify-between">
-          <dt className="sr-only">Position</dt>
-          <dd className="text-sm text-gray-500">{title}</dd>
-          {/* <dd className="mt-3">
-            <span className="rounded bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
-              Admin
-            </span>
-          </dd> */}
-        </dl>
+        {reports?.length > 0 && <Positions positions={reports} />}
       </div>
-      {reports?.length > 0 && <Positions positions={reports} />}
-    </div>
+    </>
   );
 }
 

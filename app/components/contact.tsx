@@ -78,7 +78,7 @@ export default function Contact({ name, value }: { name: string, value: string }
       href={value}
       rel="noreferrer"
       target="_blank"
-      className="text-gray-400 hover:text-gray-500"
+      className="text-gray-400 hover:text-gray-500 outline-none"
     >
       <span className="sr-only">{name}</span>
       <Icon className="h-6 w-6" aria-hidden="true" />
