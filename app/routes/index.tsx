@@ -1,6 +1,7 @@
-import { LoaderFunction, redirect } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 
-import { auth } from "~/auth/auth.server";
+// import { auth } from "~/auth/auth.server";
 import { getZone } from "~/models/zone.server";
 
 export const loader: LoaderFunction = async ({ request }) => {

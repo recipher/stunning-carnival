@@ -10,7 +10,6 @@ const Positions = ({ positions = [] }) => {
   if (positions.length === 0) return null;
   return (
     <ul className="flex flex-row mt-10 justify-center">
-      {/* <PseudoBorder mTop="-mt-10" /> */}
       <div className="-mt-10 border-l-2 absolute h-10 border-gray-200" />
       {positions.map((position, ix) => {
         const len = positions.length;

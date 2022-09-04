@@ -80,8 +80,8 @@ jobs:
         with:
           useLockFile: false
 
-      - name: ⚡ Run vitest
-        run: npm run test -- --coverage
+      # - name: ⚡ Run vitest
+      #   run: npm run test -- --coverage
 
   deploy:
     needs: [lint, typecheck, vitest]

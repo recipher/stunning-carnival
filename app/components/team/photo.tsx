@@ -1,4 +1,4 @@
-import { Asset } from "contentful";
+import type { Asset } from "contentful";
 
 export const Avatar = () => (
   <span className="inline-block h-14 w-14 overflow-hidden rounded-full bg-gray-100">

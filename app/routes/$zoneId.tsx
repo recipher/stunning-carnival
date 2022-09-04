@@ -23,7 +23,7 @@ import Navigation from "~/components/navigation";
 import ErrorPage from "~/components/500";
 import Footer from "~/components/footer";
 
-import { requireProfile } from "~/auth/auth.server";
+// import { requireProfile } from "~/auth/auth.server";
 import type { Profile } from "~/auth/auth.server";
 import type { IZone } from "../../@types/generated/contentful";
 

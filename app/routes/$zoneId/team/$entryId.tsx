@@ -14,7 +14,7 @@ import determineBreadcrumbs from "~/helpers/determineBreadcrumbs";
 import type { IBreadcrumb } from "~/helpers/determineBreadcrumbs";
 import useNavigation from "~/hooks/useNavigation";
 
-import { requireProfile } from "~/auth/auth.server";
+// import { requireProfile } from "~/auth/auth.server";
 import type { Profile } from "~/auth/auth.server";
 
 export const meta: MetaFunction = ({ data, parentsData }) => {
