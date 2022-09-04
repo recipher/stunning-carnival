@@ -28,7 +28,7 @@ export const meta: MetaFunction = () => ({
 
 export default function Root() {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full scroll-smooth">
       <head>
         <Meta />
         <Links />

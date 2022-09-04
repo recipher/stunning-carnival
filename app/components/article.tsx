@@ -8,11 +8,19 @@ import {
 } from "@contentful/rich-text-types";
 import type { Document } from "@contentful/rich-text-types";
 
+import extractHeadings, { slugify } from "../helpers/extractHeadings";
+
 type ArticleParams = {
   title: string;
   document: Document | undefined;
   zoneId: string;
 };
+
+const SkipLink = ({ value, children }: { value: string, children: any }) => (
+  <a className="no-underline" id={slugify(value)}>
+    {children}
+  </a>
+);
 
 export default function Article({
   title,
@@ -32,6 +40,26 @@ export default function Article({
       ),
     },
     renderNode: {
+      [BLOCKS.HEADING_1]: (node: any, children: any) => (
+        <SkipLink value={node.content[0].value}>
+          <h1>{children}</h1>
+        </SkipLink>
+      ),
+      [BLOCKS.HEADING_2]: (node: any, children: any) => (
+        <SkipLink value={node.content[0].value}>
+          <h2>{children}</h2>
+        </SkipLink>
+      ),
+      [BLOCKS.HEADING_3]: (node: any, children: any) => (
+        <SkipLink value={node.content[0].value}>
+          <h3>{children}</h3>
+        </SkipLink>
+      ),
+      [BLOCKS.HEADING_4]: (node: any, children: any) => (
+        <SkipLink value={node.content[0].value}>
+          <h4>{children}</h4>
+        </SkipLink>
+      ),
       [INLINES.HYPERLINK]: (node: any, children: any) => (
         <a
           href={node.data.uri}
