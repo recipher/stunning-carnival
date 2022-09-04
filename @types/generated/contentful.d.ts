@@ -162,6 +162,9 @@ export interface IPositionFields {
   /** Name */
   name: string;
 
+  /** Title */
+  title: string;
+
   /** Person */
   person?: IPerson | undefined;
 
@@ -193,11 +196,14 @@ export interface ITeamFields {
   /** Team */
   team?: string | undefined;
 
+  /** Zone */
+  zone?: IZone | undefined;
+
   /** Positions */
   positions?: IPosition[] | undefined;
 
-  /** Zone */
-  zone?: IZone | undefined;
+  /** Description */
+  description?: Document | undefined;
 
   /** Title */
   title?: string | undefined;

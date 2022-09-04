@@ -19,7 +19,7 @@ import type { Profile } from "~/auth/auth.server";
 
 export const meta: MetaFunction = ({ data, parentsData }) => {
   const zone = parentsData["routes/$zoneId"].zone?.fields.title;
-  const entry = data.entry?.fields.title;
+  const entry = data?.entry?.fields.title;
   return { title: `Safeguard Global | ${zone} | ${entry}` };
 };
 
@@ -50,7 +50,7 @@ export default function TeamPage() {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<IBreadcrumb>>([]);
 
   const { entry, view } = useLoaderData() as LoaderData;
-  const { title, positions, defaultView, zone } = entry.fields;
+  const { team, positions, description, defaultView, zone } = entry.fields;
 
   const { zoneId, entryId } = useParams();
 
@@ -70,10 +70,10 @@ export default function TeamPage() {
     <>
       <Breadcrumbs zone={zone} breadcrumbs={breadcrumbs} />
       <div className="hidden sm:block">
-        <View title={title as string} positions={positions} zoneId={zoneId as string} />
+        <View title={team as string} description={description} positions={positions} zoneId={zoneId as string} />
       </div>
       <div className="block sm:hidden">
-        <List title={title as string} positions={positions} zoneId={zoneId as string} />
+        <List title={team as string} description={description} positions={positions} zoneId={zoneId as string} />
       </div>
     </>
   );
@@ -88,7 +88,7 @@ export function CatchBoundary() {
   const caught = useCatch();
 
   if (caught.status === 404) {
-    return <ErrorMessage message="Article not found" statusCode={caught.status} />;
+    return <ErrorMessage message="Team not found" statusCode={caught.status} />;
   }
 
   throw new Error(`Unexpected caught response with status: ${caught.status}`);

@@ -13,9 +13,9 @@ export default function Photo({ name, photo }: { name: string, photo: Asset }) {
 
   return (
     <img
-      className="inline-block h-16 w-16 rounded-full"
+      className="inline-block h-18 w-18 rounded-full"
       alt={name}
-      src={`${photo.fields.file.url}?f=face&fit=crop&w=150&h=150`}
+      src={`${photo.fields.file.url}?f=face&fit=crop&w=200&h=200`}
     />
   );
 }

@@ -1,13 +1,17 @@
+import type { Document } from "@contentful/rich-text-types";
 import Photo from "./photo";
+import Article from "../article";
 
 type TeamParams = {
   title: string;
   positions: any;
+  description: Document | undefined;
   zoneId: string;
 };
 
 const Positions = ({ positions = [] }) => {
   if (positions.length === 0) return null;
+
   return (
     <ul className="flex flex-row mt-10 justify-center">
       <div className="-mt-10 border-l-2 absolute h-10 border-gray-200" />
@@ -35,7 +39,7 @@ const Positions = ({ positions = [] }) => {
 };
 
 //@ts-ignore
-const Position = ({ fields: { title, person: { sys: { id }, fields: { name, photo }}, reports }}) => {
+const Position = ({ fields: { title, person: { fields: { name, photo }}, reports }}) => {
   return (
     <div className="text-center">
       <div className="flex flex-col justify-center items-center">
@@ -62,14 +66,13 @@ const Position = ({ fields: { title, person: { sys: { id }, fields: { name, phot
 export default function Team({
   title,
   positions,
+  description,
   zoneId,
 }: TeamParams) {
 
   return (
     <>
-      <div className="prose max-w-none py-6 prose-a:text-blue-600 hover:prose-a:text-blue-500">
-        <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
-      </div>
+      <Article title={title} document={description} zoneId={zoneId} />
       <div className="flex flex-col justify-center items-center">
         <div className="container mx-auto text-center">
           <div className="flex">

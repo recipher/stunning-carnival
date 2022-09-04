@@ -10,7 +10,7 @@ import type { Document } from "@contentful/rich-text-types";
 
 type ArticleParams = {
   title: string;
-  document: Document;
+  document: Document | undefined;
   zoneId: string;
 };
 
@@ -105,7 +105,7 @@ export default function Article({
     <div className="prose max-w-none py-6 prose-a:text-blue-600 hover:prose-a:text-blue-500">
       <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
       {/* @ts-ignore */}
-      {documentToReactComponents(document, options)}
+      {document && documentToReactComponents(document, options)}
     </div>
   );
 }

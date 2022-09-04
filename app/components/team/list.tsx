@@ -1,13 +1,16 @@
 import type { IPosition } from "../../../@types/generated/contentful";
+import type { Document } from "@contentful/rich-text-types";
 import { append } from "ramda";
 import Card from "./card";
+
+import Article from "../article";
 
 type TeamParams = {
   title: string;
   positions: any;
+  description: Document | undefined;
   zoneId: string;
 };
-
 
 const flatten = (positions: any) =>
   positions.reduce((flattened: Array<IPosition>, position: IPosition) =>
@@ -18,15 +21,15 @@ const flatten = (positions: any) =>
 
 export default function Team({
   title,
+  team,
   positions,
+  description,
   zoneId,
 }: TeamParams) {
 
   return (
     <>
-      <div className="prose max-w-none py-6 prose-a:text-blue-600 hover:prose-a:text-blue-500">
-        <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
-      </div>
+      <Article title={title} document={description} zoneId={zoneId} />
       <div>
         <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
           {flatten(positions).map((position: any, ix: number) => (
